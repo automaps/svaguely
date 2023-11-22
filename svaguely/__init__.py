@@ -64,8 +64,8 @@ def convert_elements(group: svgelements.Group) -> Mapping:
       print("Not supported class: {}".format(f"{item=} {type(item)}"))
       continue
 
-    return_dict[item_name] = FloorPlanGeometry(
-      item_contents, item_value_class, item_type, item_filled
+    return_dict[item_name] = SvgShapelyGeometry(
+      item_name, item_contents, item_value_class, item_type, item_filled
     )
 
   return return_dict
