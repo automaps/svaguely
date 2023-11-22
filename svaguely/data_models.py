@@ -4,7 +4,7 @@ from typing import Callable, Any
 
 from shapely.geometry.base import BaseGeometry
 
-__all__ = ["SvgShapelyGeometry", "ConvertMetaParam"]
+__all__ = ["SvgShapelyGeometry", "SvgMetadata"]
 
 
 @dataclass
@@ -17,7 +17,7 @@ class SvgShapelyGeometry:
 
 
 @dataclass
-class ConvertMetaParam:
+class SvgMetadata:
     name: str
     value: Any
     default_value: Any
