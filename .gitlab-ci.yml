@@ -1,0 +1,83 @@
+# Include template
+include:
+  - project: "MapsIndoors/Utils/gitlab-ci-templates"
+    ref: master
+    file: ".gitlab-ci-python3.yml"
+
+# Stages
+stages:
+  - Code Analysis
+  - Build
+  - Unit Test
+  - Deploy
+
+# Code Analysis
+pylint-app:
+  extends: .pylint
+  stage: Code Analysis
+  allow_failure: false
+  rules:
+    - if: $CI_MERGE_REQUEST_IID
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+black:
+  stage: Code Analysis
+  extends: .black
+  variables:
+    SRC_PATH: src
+  allow_failure: false
+  rules:
+    - if: $CI_MERGE_REQUEST_IID # On merge_requests
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH # Or main
+
+flake8:
+  stage: Code Analysis
+  extends: .flake8
+  variables:
+    EXCLUDE_STRING: "submodules"
+  allow_failure: false
+  rules:
+    - if: $CI_MERGE_REQUEST_IID # On merge_requests
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH # Or main
+
+poetry-check:
+  stage: Code Analysis
+  extends: .poetry-check
+
+# Build
+create-deployments:
+  extends: .docker-build
+  stage: Build
+
+pages:
+  stage: Build
+  extends: .pages
+  variables:
+    GIT_LFS_SKIP_SMUDGE: "1" # Don't pull lfs objects
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH # On main
+  needs: []
+
+# Unit Test
+run-tests:
+  extends: .pytest
+  stage: Unit Test
+
+# Deploy
+push-docker-cache:
+  stage: Deploy
+  extends: .docker-push-image-latest
+
+publish-pypi:
+  stage: Deploy
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH # on main
+  needs: ["run-tests"]
+  image: python:latest
+  script:
+    - pip install poetry
+    - poetry build
+    - echo $CI_PROJECT_PATH
+    - poetry config repositories.gitlab "https://git.rtx.mapspeople.com/api/v4/projects/$CI_PROJECT_ID/packages/pypi"
+    - poetry config http-basic.gitlab gitlab-ci-token "$CI_JOB_TOKEN"
+    - poetry publish --repository gitlab

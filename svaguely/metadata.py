@@ -1,15 +1,10 @@
+# -*- coding: utf-8 -*-
 from dataclasses import dataclass
 from typing import Callable, Any
 
 METADATA_KEY = "SVG_METADATA"
 
-
-@dataclass
-class ConvertMetaParam:
-    name: str
-    value: Any
-    default_value: Any
-    str_to_type: Callable
+__all__ = ["add_metadata"]
 
 
 def add_metadata(metadata_dict, path_to_svg) -> str:
@@ -28,6 +23,6 @@ def add_metadata(metadata_dict, path_to_svg) -> str:
             "</svg>", f"{metadata_complete_insert_str}</svg>"
         )
     else:
-        print("CANT FIND NECESSARY ENDING STRING")
+        raise Exception("CANT FIND NECESSARY ENDING STRING")
 
-    return svg_as_text_string
+    return svg_metadata_string
