@@ -32,7 +32,7 @@ def flatten_groups(geoms: Mapping) -> Mapping:
   return out_dict
 
 
-def parse_svg(svg_filestream: Union[Path, str]) -> Tuple:
+def parse_svg(svg_filestream: Union[Path, str, bytes]) -> Tuple:
   """
   Main function of converting. This reads the svg and parses it.
   Then converts the svgelements into classes with shapely geometries.
@@ -40,7 +40,11 @@ def parse_svg(svg_filestream: Union[Path, str]) -> Tuple:
   :param svg_filestream: Path to the svg
   :return: dataclass of svg elements and dataclass of metadata
   """
-  if not os.path.isfile(svg_filestream):
+
+  if isinstance(svg_filestream, bytes):
+    svg_filestream = io.BytesIO(svg_filestream)
+
+  elif not os.path.isfile(svg_filestream):
     svg_filestream = io.StringIO(svg_filestream)
 
   svg = svgelements.SVG.parse(
