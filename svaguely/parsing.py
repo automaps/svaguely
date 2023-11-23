@@ -18,18 +18,7 @@ if normalised_coords:
 else:
   w = h = 1000
 
-__all__ = ["flatten_groups", "parse_svg"]
-
-
-def flatten_groups(geoms: Mapping) -> Mapping:
-  out_dict = {}
-  for k, v in geoms.items():
-    if isinstance(v, Mapping):
-      out_dict.update(**{f"{k}_{ki}": vi for ki, vi in flatten_groups(v).items()})
-    else:
-      out_dict[k] = v
-
-  return out_dict
+__all__ = ["parse_svg"]
 
 
 def parse_svg(svg_filestream: Union[Path, str, bytes]) -> Tuple:
@@ -78,9 +67,7 @@ def parse_svg(svg_filestream: Union[Path, str, bytes]) -> Tuple:
     else:
       groups[group.id] = convert_elements(group)
 
-  floorplan_for_export = flatten_groups(groups)
-
-  return floorplan_for_export, metadata_dict
+  return group, metadata_dict
 
 
 def convert_elements(group: svgelements.Group) -> Mapping:
