@@ -169,3 +169,12 @@ jobs/
 # Google cloud service key
 gcp_service_key.json
 gcloud_signing_key.json
+
+
+*[Ee]xcluded.*
+*[Ee]xclude.*
+*[Ee]xcluded*
+*[Ee]xclude*
+
+
+pip-wheel-metadata
