@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-from .element_to_shape import *
+from .conversion import *
+from .converters import *
 from .data_models import *
-from .parsing import *
+from .element_to_shape import *
 from .metadata import *
+from .parsing import *

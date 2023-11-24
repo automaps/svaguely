@@ -9,17 +9,17 @@ __all__ = ["SvgShapelyGeometry", "SvgMetadata"]
 
 @dataclass
 class SvgShapelyGeometry:
-  name: str
-  geometry: BaseGeometry
-  item_value_class: str
-  item_type: str
-  item_filled: bool
-  item_colour: str = None
+    name: str
+    geometry: BaseGeometry
+    item_value_class: str
+    item_type: str
+    item_filled: bool
+    item_fill_colour: str = None
 
 
 @dataclass
 class SvgMetadata:
-  name: str
-  value: Any
-  default_value: Any
-  str_to_type: Callable
+    name: str
+    value: Any
+    default_value: Any
+    str_to_type: Callable
