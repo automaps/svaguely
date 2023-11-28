@@ -75,7 +75,10 @@ def path_converter(
             logging.warning(f"empty path {path_points=}")
 
     if ASSUME_HOLES:
-        envelop, rest = split_enveloping_geometry(geoms)
-        return shapely.difference(envelop, shapely.unary_union(rest)).buffer(0)
+        if len(geoms) > 1:
+            res = split_enveloping_geometry(geoms)
+            if res:
+                envelop, rest = res
+                return shapely.difference(envelop, shapely.unary_union(rest)).buffer(0)
 
     return shapely.GeometryCollection(geoms)

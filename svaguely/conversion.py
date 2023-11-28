@@ -24,6 +24,7 @@ def convert_elements(group: svgelements.Group) -> Dict[str, SvgShapelyGeometry]:
     for item in group:
         item_type = type(item)
         item_filled = False
+        item_fill_colour = None
 
         if hasattr(item, "fill"):
             if item.fill.value is not None:
