@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import logging
+
 import numpy
 import shapely
 import svgelements
@@ -6,6 +8,7 @@ from shapely import affinity
 from warg import Number
 
 __all__ = ["polygon_converter"]
+VERBOSE = True
 
 
 def polygon_converter(
@@ -29,7 +32,11 @@ def polygon_converter(
     area_polygon_rotate = affinity.rotate(
         area_linestring, angle_degrees, (rotate_x, rotate_y)
     )
-    if not area_linestring.is_ring:
+    if not area_polygon_rotate.is_ring:
+        if VERBOSE:
+            logging.warning(
+                f"linestring was not a ring for polygon, {area_polygon_rotate}"
+            )
         area_polygon_rotate = shapely.geometry.LineString(
             [*area_polygon_rotate.coords, area_polygon_rotate.coords[0]]
         )
