@@ -79,6 +79,9 @@ def path_converter(
             res = split_enveloping_geometry(geoms)
             if res:
                 envelop, rest = res
-                return shapely.difference(envelop, shapely.unary_union(rest)).buffer(0)
+                if envelop.is_valid:
+                    diff = shapely.difference(envelop, shapely.unary_union(rest))
+                    if diff.is_valid:
+                        return diff.buffer(0)
 
     return shapely.GeometryCollection(geoms)

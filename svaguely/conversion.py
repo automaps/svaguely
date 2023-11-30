@@ -16,6 +16,8 @@ from .converters import (
 )
 from .data_models import SvgShapelyGeometry
 
+VERBOSE = False
+
 
 def convert_elements(group: svgelements.Group) -> Dict[str, SvgShapelyGeometry]:
     return_dict = {}
@@ -75,10 +77,14 @@ def convert_elements(group: svgelements.Group) -> Dict[str, SvgShapelyGeometry]:
             shape_geometry = path_converter(item)
 
         elif isinstance(item, svgelements.Text):
-            logging.warning(f"Text is not a supported class: {f'{item=} {type(item)}'}")
+            if VERBOSE:
+                logging.warning(
+                    f"Text is not a supported class: {f'{item=} {type(item)}'}"
+                )
             continue  # TODO: Handle text
         else:
-            logging.warning(f"Not supported class: {f'{item=} {type(item)}'}")
+            if VERBOSE:
+                logging.warning(f"Not supported class: {f'{item=} {type(item)}'}")
             continue
 
         return_dict[shape_name] = SvgShapelyGeometry(
