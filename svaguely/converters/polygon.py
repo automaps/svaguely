@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import logging
 
 import numpy
 import shapely
@@ -8,12 +7,11 @@ from shapely import affinity
 from warg import Number
 
 __all__ = ["polygon_converter"]
-VERBOSE = True
 
 
 def polygon_converter(
     item: svgelements.Polygon, w: Number = 1, h: Number = 1
-) -> shapely.Polygon:
+) -> shapely.geometry.base.BaseGeometry:
     area_points = item.points
     rotate_x = area_points[0].x
     rotate_y = h - area_points[0].y
@@ -29,17 +27,16 @@ def polygon_converter(
 
     angle_polygon_rad = float(item.rotation)
     angle_degrees = angle_polygon_rad * (180 / numpy.pi)
-    area_polygon_rotate = affinity.rotate(
-        area_linestring, angle_degrees, (rotate_x, rotate_y)
-    )
-    if not area_polygon_rotate.is_ring:
-        if VERBOSE:
-            logging.warning(
-                f"linestring was not a ring for polygon, {area_polygon_rotate}"
-            )
-        area_polygon_rotate = shapely.geometry.LineString(
-            [*area_polygon_rotate.coords, area_polygon_rotate.coords[0]]
+    rotated_geom = affinity.rotate(area_linestring, angle_degrees, (rotate_x, rotate_y))
+
+    if len(rotated_geom.coords) < 4:
+        rotated_geom = shapely.geometry.LineString(
+            [*rotated_geom.coords, rotated_geom.coords[0]]
         )
 
-    area_polygon = shapely.geometry.Polygon(area_polygon_rotate)
-    return area_polygon
+    if rotated_geom.is_ring and rotated_geom.is_valid:
+        out_geom = shapely.geometry.Polygon(rotated_geom)
+    else:
+        out_geom = shapely.unary_union(rotated_geom)
+
+    return out_geom
