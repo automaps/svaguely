@@ -4,7 +4,7 @@ import json
 import os
 from itertools import count
 from pathlib import Path
-from typing import Union, Optional, Any
+from typing import Any, Optional, Union
 
 import svgelements
 

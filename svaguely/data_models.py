@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from dataclasses import dataclass
-from typing import Callable, Any
+from typing import Any, Callable
 
 from shapely.geometry.base import BaseGeometry
 

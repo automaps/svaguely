@@ -7,10 +7,10 @@ import svgelements
 
 from .converters import (
     circle_converter,
-    point_converter,
     path_converter,
-    polyline_converter,
+    point_converter,
     polygon_converter,
+    polyline_converter,
     rectangle_converter,
     simpleline_converter,
 )
