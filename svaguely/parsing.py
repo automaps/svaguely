@@ -13,6 +13,7 @@ from .data_models import SvgShapelyGeometry
 from .metadata import METADATA_KEY
 
 __all__ = ["parse_svg"]
+__author__ = "Christian Heider Lindbjerg <chen(at)mapspeople.com>"
 
 
 def parse_svg(

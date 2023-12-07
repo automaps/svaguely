@@ -170,8 +170,6 @@ jobs/
 gcp_service_key.json
 gcloud_signing_key.json
 
-
-
 *[Ee]xcluded.*
 *[Ee]xclude.*
 *[Ee]xcluded*
@@ -179,4 +177,4 @@ gcloud_signing_key.json
 
 
 pip-wheel-metadata
-build/
+

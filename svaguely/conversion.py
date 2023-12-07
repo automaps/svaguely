@@ -6,17 +6,18 @@ from typing import Dict
 import svgelements
 
 from .converters import (
-    circle_converter,
-    point_converter,
-    path_converter,
-    polyline_converter,
-    polygon_converter,
-    rectangle_converter,
-    simpleline_converter,
+  circle_converter,
+  point_converter,
+  path_converter,
+  polyline_converter,
+  polygon_converter,
+  rectangle_converter,
+  simpleline_converter,
 )
 from .data_models import SvgShapelyGeometry
 
 VERBOSE = False
+__author__ = "Christian Heider Lindbjerg <chen(at)mapspeople.com>"
 
 
 def convert_elements(element: svgelements.Group) -> Dict[str, SvgShapelyGeometry]:
