@@ -1,0 +1,9 @@
+-r ../requirements.txt
+apppath
+crc32c
+jord[shapely]
+pytest
+pytz
+shapely
+svgelements
+warg

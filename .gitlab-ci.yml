@@ -7,7 +7,8 @@ include:
 # Stages
 stages:
   - Code Analysis
-  - Unit Test
+  - Build
+  - Test
   - Deploy
 
 # Code Analysis
@@ -68,7 +69,7 @@ publish-pypi:
   stage: Deploy
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH # on main
-  needs: ["run-tests"]
+  needs: ["unit-tests"]
   image: python:latest
   script:
     - pip install poetry
