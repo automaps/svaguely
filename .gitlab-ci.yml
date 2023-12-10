@@ -45,10 +45,6 @@ poetry-check:
   extends: .poetry-check
 
 # Build
-create-deployments:
-  extends: .docker-build
-  stage: Build
-
 pages:
   stage: Build
   extends: .pages
