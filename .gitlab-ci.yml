@@ -7,7 +7,6 @@ include:
 # Stages
 stages:
   - Code Analysis
-  - Build
   - Unit Test
   - Deploy
 
@@ -44,16 +43,6 @@ poetry-check:
   stage: Code Analysis
   extends: .poetry-check
 
-# Build
-pages:
-  stage: Build
-  extends: .pages
-  variables:
-    GIT_LFS_SKIP_SMUDGE: "1" # Don't pull lfs objects
-  rules:
-    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH # On main
-  needs: []
-
 # Unit Test
 run-tests:
   extends: .pytest
@@ -74,3 +63,11 @@ publish-pypi:
     - poetry config repositories.gitlab "https://git.rtx.mapspeople.com/api/v4/projects/$CI_PROJECT_ID/packages/pypi"
     - poetry config http-basic.gitlab gitlab-ci-token "$CI_JOB_TOKEN"
     - poetry publish --repository gitlab
+
+pages:
+  stage: Deploy
+  extends: .pages
+  before_script:
+    - pip install sphinx_rtd_theme # Uses this sphinx theme
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH # On main
