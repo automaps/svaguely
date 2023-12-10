@@ -5,11 +5,12 @@ from .data_models import *
 from .metadata import *
 from .parsing import *
 
-PROJECT_NAME = "Pimigranate"
-PROJECT_AUTHOR = "Christian Heider Lindbjerg <chen(at)mapspeople.com>"
+__project__ = "Svaguely"
+__author__ = "Christian Heider Lindbjerg <chen(at)mapspeople.com>"
+__version__ = "0.0.1"
+
+PROJECT_NAME = __project__
+PROJECT_AUTHOR = __author__
 PROJECT_YEAR = 2023
 PROJECT_ORGANISATION = "MapsPeople"
-PROJECT_VERSION = "0.0.1"
-
-__author__ = PROJECT_AUTHOR
-__version__ = PROJECT_VERSION
+PROJECT_VERSION = __version__

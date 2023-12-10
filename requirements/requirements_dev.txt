@@ -1,0 +1,7 @@
+black
+flake8
+furo
+pre-commit
+pytest
+sphinx
+sphinxcontrib-programoutput
