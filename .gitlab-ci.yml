@@ -43,10 +43,24 @@ poetry-check:
   stage: Code Analysis
   extends: .poetry-check
 
-# Unit Test
-run-tests:
-  extends: .pytest
-  stage: Unit Test
+# Build
+build-docker-image:
+  stage: Build
+  extends: .docker-build
+  rules:
+    - if: $CI_MERGE_REQUEST_IID # On merge_requests
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  needs: []
+
+### Test ###
+unit-tests:
+  stage: Test
+  extends: .pytest-parallel
+  variables:
+    TEST_FILES_OR_DIRS: tests
+  rules:
+    - if: $CI_MERGE_REQUEST_IID # On merge_requests
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
 # Deploy
 
