@@ -24,7 +24,7 @@ black:
   stage: Code Analysis
   extends: .black
   variables:
-    SRC_PATH: src
+    SRC_PATH: svaguely
   allow_failure: false
   rules:
     - if: $CI_MERGE_REQUEST_IID # On merge_requests
