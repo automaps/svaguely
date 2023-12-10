@@ -64,9 +64,6 @@ run-tests:
   stage: Unit Test
 
 # Deploy
-push-docker-cache:
-  stage: Deploy
-  extends: .docker-push-image-latest
 
 publish-pypi:
   stage: Deploy
