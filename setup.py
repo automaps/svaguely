@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+import re
+from pathlib import Path
 from typing import List, Sequence, TextIO, Union
+
+from setuptools import find_packages, setup
 
 MIN_PYTHON_MAJOR = 3
 MIN_PYTHON_MINOR = 8
@@ -17,11 +20,6 @@ def python_version_check(major: int = MIN_PYTHON_MAJOR, minor: int = MIN_PYTHON_
 
 
 python_version_check()
-
-from pathlib import Path
-import re
-
-from setuptools import find_packages, setup
 
 
 def read_reqs(file: str, path: Path) -> List[str]:
@@ -70,7 +68,7 @@ def read_reqs(file: str, path: Path) -> List[str]:
     return list(req_set)
 
 
-with open(Path(__file__).parent / "svaguely" / "__init__.py", "r") as project_init_file:
+with open(Path(__file__).parent / "svaguely" / "__init__.py") as project_init_file:
     content = project_init_file.read()  # get strings from module
     version = re.search(r"__version__ = ['\"]([^'\"]*)['\"]", content, re.M).group(1)
     project_name = re.search(r"__project__ = ['\"]([^'\"]*)['\"]", content, re.M).group(
