@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from .circle import *
 from .path import *
 from .point import *
