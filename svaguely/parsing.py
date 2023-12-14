@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
 import io
 import json
 import os
 from itertools import count
 from pathlib import Path
-from typing import Any, Optional, Union
+from typing import Any, Dict, Optional, Tuple, Union
 
 import svgelements
 
@@ -18,7 +17,7 @@ __author__ = "Christian Heider Lindbjerg <chen(at)mapspeople.com>"
 
 def parse_svg(
     svg_filestream: Union[Path, str, bytes]
-) -> tuple[dict[Any, dict[str, SvgShapelyGeometry]], Optional[Any]]:
+) -> Tuple[Dict[Any, Dict[str, SvgShapelyGeometry]], Optional[Any]]:
     """
     Main function of converting. This reads the svg and parses it.
     Then converts the svgelements into classes with shapely geometries.
