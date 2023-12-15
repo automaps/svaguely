@@ -15,7 +15,6 @@ from .converters import (
 )
 from .data_models import SvgShapelyGeometry
 
-VERBOSE = False
 __author__ = "Christian Heider Lindbjerg <chen(at)mapspeople.com>"
 
 
@@ -64,8 +63,10 @@ def convert_elements(element: svgelements.Group) -> Dict[str, SvgShapelyGeometry
 
         elif isinstance(item, svgelements.Polygon):
             shape_geometry = polygon_converter(item)
+
         elif isinstance(item, svgelements.Point):
             shape_geometry = point_converter(item)
+
         elif isinstance(item, svgelements.Circle):
             if False:
                 e = svgelements.Path(item)
@@ -73,6 +74,7 @@ def convert_elements(element: svgelements.Group) -> Dict[str, SvgShapelyGeometry
                 shape_geometry = path_converter(e)
             else:
                 shape_geometry = circle_converter(item)
+
         elif isinstance(item, (svgelements.Ellipse, svgelements.Curve)):
             e = svgelements.Path(item)
             e_reified = e.reify()
@@ -82,13 +84,14 @@ def convert_elements(element: svgelements.Group) -> Dict[str, SvgShapelyGeometry
             shape_geometry = path_converter(item)
 
         elif isinstance(item, svgelements.Text):
-            if VERBOSE:
+            if False:
                 logging.warning(
                     f"Text is not a supported class: {f'{item=} {type(item)}'}"
                 )
             continue  # TODO: Handle text
+
         else:
-            if VERBOSE:
+            if False:
                 logging.warning(f"Not supported class: {f'{item=} {type(item)}'}")
             continue
 

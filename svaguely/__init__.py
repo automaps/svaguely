@@ -5,6 +5,9 @@ from .metadata import *
 from .parsing import *
 
 __project__ = "Svaguely"
+__doc__ = """\
+Svaguely is a Python package for converting svg elements into shapely geometries
+"""
 __author__ = "Christian Heider Lindbjerg <chen(at)mapspeople.com>"
 __version__ = "0.0.1"
 

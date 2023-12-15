@@ -7,3 +7,6 @@ from .rectangle import *
 from .simple_line import *
 
 __author__ = "Christian Heider Lindbjerg <chen(at)mapspeople.com>"
+__doc__ = """\
+Converters
+"""

@@ -23,18 +23,19 @@ def polygon_converter(
         point = shapely.geometry.Point(x_coord, y_coord)
         area_list_points.append(point)
 
-    area_linestring = shapely.geometry.LineString(area_list_points)
+    if len(area_list_points) < 4:
+        area_list_points.append(area_list_points[0])
+
+    area_linestring = shapely.LinearRing(area_list_points)
 
     angle_polygon_rad = float(item.rotation)
     angle_degrees = angle_polygon_rad * (180 / numpy.pi)
     rotated_geom = affinity.rotate(area_linestring, angle_degrees, (rotate_x, rotate_y))
 
-    if len(rotated_geom.coords) < 4:
-        rotated_geom = shapely.geometry.LineString(
-            [*rotated_geom.coords, rotated_geom.coords[0]]
-        )
+    if not rotated_geom.is_valid:
+        rotated_geom = rotated_geom.buffer(0)
 
-    if rotated_geom.is_ring and rotated_geom.is_valid:
+    if rotated_geom.is_ring:
         out_geom = shapely.geometry.Polygon(rotated_geom)
     else:
         out_geom = shapely.unary_union(rotated_geom)

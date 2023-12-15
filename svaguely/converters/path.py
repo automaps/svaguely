@@ -16,7 +16,7 @@ def path_converter(
     item: svgelements.Path,
     w: Number = 1,
     h: Number = 1,
-    EPSILON: float = 1e-11,
+    EPSILON: float = 1e-10,
     step_size: float = 0.1,
 ) -> shapely.GeometryCollection:
     sub_paths = []
