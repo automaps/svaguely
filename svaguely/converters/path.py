@@ -4,7 +4,7 @@ import logging
 import numpy
 import shapely
 import svgelements
-from jord.shapely_utilities import split_enveloping_geometry
+from jord.shapely_utilities import split_enveloping_geometry, overlap_groups
 from warg import Number
 
 __all__ = ["path_converter"]
@@ -77,14 +77,28 @@ def path_converter(
 
     if ASSUME_SUB_PATHS_ARE_HOLES:
         if len(geoms) > 1:
+            grouped = overlap_groups(geoms)
+            if grouped > 1:
+                print("bla then we have to do sth!")
             res = split_enveloping_geometry(geoms)
             if res:
                 envelop, rest = res
+                new_rest_list = []
+                for poly in rest:
+                    valid_poly = shapely.make_valid(poly)
+                    new_rest_list.append(valid_poly)
+                try:
+                    rest_union = shapely.unary_union(new_rest_list).buffer(0)
+                except Exception as ex:
+                    print("UNION ERROR:", ex)
                 if envelop.is_valid:
-                    diff = shapely.difference(
-                        envelop, shapely.unary_union(rest)
-                    ).buffer(0)
-                    if diff.is_valid:
-                        return diff
+                        try:
+                            diff = shapely.difference(
+                                envelop, rest_union
+                            ).buffer(0)
+                            if diff.is_valid:
+                                return diff
+                        except Exception as e:
+                            print("PATH ERROR:", e)
 
     return shapely.GeometryCollection(geoms)
