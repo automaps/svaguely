@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
+from typing import Optional
 
 import numpy
 import shapely
@@ -19,7 +20,7 @@ def path_converter(
     h: Number = 1,
     EPSILON: float = 1e-11,
     step_size: float = 0.1,
-) -> shapely.GeometryCollection:
+) -> Optional[shapely.geometry.base.BaseGeometry]:
     sub_paths = []
     assert 0 < step_size < 1.0, f"{step_size=} was not within range [0..1.0]"
     assert EPSILON > 0
