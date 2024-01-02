@@ -21,8 +21,8 @@ def path_converter(
     step_size: float = 0.1,
 ) -> shapely.GeometryCollection:
     sub_paths = []
-    assert 0<step_size<1.0,f'{step_size=} was not within range [0..1.0]'
-    assert EPSILON>0
+    assert 0 < step_size < 1.0, f"{step_size=} was not within range [0..1.0]"
+    assert EPSILON > 0
     try:
         points_along_path = []
         for segment in item:
@@ -39,7 +39,7 @@ def path_converter(
                 for step in numpy.arange(
                     step_size, 1.0 + step_size, step_size, dtype=float
                 ):
-                    step=min(step,1.0)
+                    step = min(step, 1.0)
                     points_along_path.append(segment.point(step))
 
             elif isinstance(segment, svgelements.Close):
@@ -50,7 +50,7 @@ def path_converter(
             else:
                 raise NotImplementedError(f"{segment=}")
 
-        if len(sub_paths)==0:
+        if len(sub_paths) == 0:
             sub_paths.append(points_along_path.copy())
 
     except Exception as p:
@@ -88,9 +88,15 @@ def path_converter(
             if all(was_polygon):
                 valid_geom_list = []
                 for poly in geoms:
-                    if not poly.is_valid: #bowtie issue can occur. Probably some rounding in the coordinates.
-                        buffer_in = poly.buffer(-EPSILON, cap_style=3, join_style=2, mitre_limit=2)
-                        buffer_out = buffer_in.buffer(EPSILON, cap_style=3, join_style=2, mitre_limit=2)
+                    if (
+                        not poly.is_valid
+                    ):  # bowtie issue can occur. Probably some rounding in the coordinates.
+                        buffer_in = poly.buffer(
+                            -EPSILON, cap_style=3, join_style=2, mitre_limit=2
+                        )
+                        buffer_out = buffer_in.buffer(
+                            EPSILON, cap_style=3, join_style=2, mitre_limit=2
+                        )
                         valid_geom_list.append(buffer_out)
                     else:
                         valid_geom_list.append(poly)
@@ -105,24 +111,23 @@ def path_converter(
                         except Exception as ex:
                             logging.error("UNION ERROR:", ex)
                         if envelop.is_valid:
-                                try:
-                                    diff = shapely.difference(
-                                        envelop, rest_union
-                                    ).buffer(0)
-                                    if diff.is_valid:
-                                        output_geoms.append(diff)
-                                except Exception as e:
-                                    logging.error("PATH ERROR:", e)
+                            try:
+                                diff = shapely.difference(envelop, rest_union).buffer(0)
+                                if diff.is_valid:
+                                    output_geoms.append(diff)
+                            except Exception as e:
+                                logging.error("PATH ERROR:", e)
                 return shapely.unary_union(output_geoms)
 
-    if len(geoms)==1:
+    if len(geoms) == 1:
         return geoms[0]
 
-    gc = shapely.GeometryCollection(geoms) #If its more than one geometry and its not all polygons (e.g. 1 polygon and 1 linestring), it returns a geometrycollection
+    gc = shapely.GeometryCollection(
+        geoms
+    )  # If its more than one geometry and its not all polygons (e.g. 1 polygon and 1 linestring), it returns a geometrycollection
 
     if gc.is_empty:
         logging.warning("PATH PARSING: Geometry collection was empty")
         return None
-
 
     return gc
