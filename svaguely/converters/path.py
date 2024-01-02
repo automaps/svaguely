@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import logging
 from typing import Optional
 
@@ -18,7 +17,7 @@ def path_converter(
     item: svgelements.Path,
     w: Number = 1,
     h: Number = 1,
-    EPSILON: float = 1e-11,
+    EPSILON: float = 1e-10,
     step_size: float = 0.1,
 ) -> Optional[shapely.geometry.base.BaseGeometry]:
     sub_paths = []
