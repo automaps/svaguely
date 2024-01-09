@@ -1,18 +1,10 @@
 import logging
-
-from typing import Optional, Mapping, Sequence, Union, Callable, List, Iterable
+from typing import Optional, Sequence
 
 import numpy
 import shapely
 import svgelements
-from jord.shapely_utilities import (
-    split_enveloping_geometry,
-    overlap_groups,
-    opening,
-    closing,
-    is_multi,
-)
-from shapely import unary_union
+from jord.shapely_utilities import overlap_groups, split_enveloping_geometry
 from warg import Number
 
 __all__ = ["path_converter"]
@@ -29,6 +21,9 @@ def path_converter(
     step_size: float = 0.1,
 ) -> Optional[shapely.geometry.base.BaseGeometry]:
     sub_paths = []
+
+    assert h == w, "w and h must be the same"
+
     assert 0 < step_size < 1.0, f"{step_size=} was not within range [0..1.0]"
     assert EPSILON > 0
     try:
@@ -111,9 +106,7 @@ def path_converter(
                         valid_geom_list.append(buffer_out)
                     else:
                         valid_geom_list.append(poly)
-                grouped = overlap_groups_contains(
-                    valid_geom_list, group_test=shapely.intersects
-                )
+                grouped = overlap_groups(valid_geom_list)
                 output_geoms = []
                 for group in grouped:
                     res = split_enveloping_geometry(group.values())
@@ -157,10 +150,11 @@ def path_converter(
 
 
 def recursive_stamping(
-    geometries: Iterable[shapely.geometry.base.BaseGeometry],
+    geometries: Sequence[shapely.geometry.base.BaseGeometry],
 ) -> shapely.geometry.base.BaseGeometry:
     """
     Stamping geometries until there is nothing to stamp
+
     :param geometries: List of shapely geometries
     :return: Union of shapely geometries
     """
@@ -168,9 +162,7 @@ def recursive_stamping(
     if len(geometries) <= 1:
         stamped_out_geoms.extend(geometries)
     else:
-        groups_of_intersecting_geometries = overlap_groups_contains(
-            geometries, group_test=shapely.intersects
-        )
+        groups_of_intersecting_geometries = overlap_groups(geometries)
 
         for group in groups_of_intersecting_geometries:
             grouped_geometries = group.values()
@@ -189,38 +181,3 @@ def recursive_stamping(
                 stamped_out_geoms.extend(grouped_geometries)
 
     return shapely.unary_union(stamped_out_geoms).buffer(0)
-
-
-def overlap_groups_contains(
-    to_be_grouped: Union[Sequence, Mapping],
-    must_be_unique: bool = False,
-    group_test: Callable = shapely.intersects,
-) -> Sequence[Mapping]:
-    if isinstance(to_be_grouped, Mapping):
-        ...
-    else:
-        to_be_grouped = dict(zip((i for i in range(len(to_be_grouped))), to_be_grouped))
-
-    if must_be_unique:
-        assert not any(is_multi(p) for p in to_be_grouped.values()), to_be_grouped
-
-    s = list(unary_union(v) for v in to_be_grouped.values())
-
-    union = closing(unary_union(s)).buffer(0)
-    groups = []
-    already_grouped = []
-
-    if not is_multi(union):
-        groups.append(to_be_grouped)
-    else:
-        for union_part in union.geoms:
-            intersectors = {}
-            for k, v in to_be_grouped.items():
-                if group_test(v, union_part):
-                    if must_be_unique:
-                        assert k not in already_grouped, f"{k, already_grouped, v}"
-                    intersectors[k] = v
-                    already_grouped.append(k)
-            groups.append(intersectors)
-
-    return groups
