@@ -91,9 +91,6 @@ def path_converter(
         else:
             logging.warning(f"empty path {path_points=}")
 
-    if item.id == "Kettle_Icon":
-        print("Kettle Icon debug")
-
     if ASSUME_SUB_PATHS_ARE_HOLES:
         if len(geoms) > 1:
             if all(was_polygon):
