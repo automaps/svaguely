@@ -1,10 +1,18 @@
 import logging
-from typing import Optional
+
+from typing import Optional, Mapping, Sequence, Union, Callable, List, Iterable
 
 import numpy
 import shapely
 import svgelements
-from jord.shapely_utilities import split_enveloping_geometry, overlap_groups, opening
+from jord.shapely_utilities import (
+    split_enveloping_geometry,
+    overlap_groups,
+    opening,
+    closing,
+    is_multi,
+)
+from shapely import unary_union
 from warg import Number
 
 __all__ = ["path_converter"]
@@ -83,6 +91,9 @@ def path_converter(
         else:
             logging.warning(f"empty path {path_points=}")
 
+    if item.id == "Kettle_Icon":
+        print("Kettle Icon debug")
+
     if ASSUME_SUB_PATHS_ARE_HOLES:
         if len(geoms) > 1:
             if all(was_polygon):
@@ -100,19 +111,31 @@ def path_converter(
                         valid_geom_list.append(buffer_out)
                     else:
                         valid_geom_list.append(poly)
-                grouped = overlap_groups(valid_geom_list)
+                grouped = overlap_groups_contains(
+                    valid_geom_list, group_test=shapely.intersects
+                )
                 output_geoms = []
                 for group in grouped:
                     res = split_enveloping_geometry(group.values())
                     if res:
                         envelop, rest = res
-                        try:
-                            rest_union = shapely.unary_union(rest).buffer(0)
-                        except Exception as ex:
-                            logging.error("UNION ERROR:", ex)
+                        diff = None
+
+                        if len(rest) > 1:
+                            stamped_geometries = recursive_stamping(rest)
+
+                            diff = shapely.difference(
+                                envelop, stamped_geometries
+                            ).buffer(0)
+                        else:
+                            try:
+                                rest_union = shapely.unary_union(rest).buffer(0)
+                                diff = shapely.difference(envelop, rest_union).buffer(0)
+                            except Exception as ex:
+                                logging.error("UNION ERROR:", ex)
+
                         if envelop.is_valid:
                             try:
-                                diff = shapely.difference(envelop, rest_union).buffer(0)
                                 if diff.is_valid:
                                     output_geoms.append(diff)
                             except Exception as e:
@@ -131,3 +154,73 @@ def path_converter(
         return None
 
     return gc
+
+
+def recursive_stamping(
+    geometries: Iterable[shapely.geometry.base.BaseGeometry],
+) -> shapely.geometry.base.BaseGeometry:
+    """
+    Stamping geometries until there is nothing to stamp
+    :param geometries: List of shapely geometries
+    :return: Union of shapely geometries
+    """
+    stamped_out_geoms = []
+    if len(geometries) <= 1:
+        stamped_out_geoms.extend(geometries)
+    else:
+        groups_of_intersecting_geometries = overlap_groups_contains(
+            geometries, group_test=shapely.intersects
+        )
+
+        for group in groups_of_intersecting_geometries:
+            grouped_geometries = group.values()
+            envelop_and_children = split_enveloping_geometry(grouped_geometries)
+            if envelop_and_children:
+                envelope, rest = envelop_and_children
+                if len(rest) < 1:
+                    # split geometry only has an envelope, but no rest. Then just append the envelope
+                    stamped_out_geoms.append(envelope)
+                else:  # If the rest is multiple polygons, we need to stamp them again
+                    stamped_out_geoms.append(
+                        shapely.difference(envelope, recursive_stamping(rest)).buffer(0)
+                    )
+
+            else:  # There was no enveloping geometry
+                stamped_out_geoms.extend(grouped_geometries)
+
+    return shapely.unary_union(stamped_out_geoms).buffer(0)
+
+
+def overlap_groups_contains(
+    to_be_grouped: Union[Sequence, Mapping],
+    must_be_unique: bool = False,
+    group_test: Callable = shapely.intersects,
+) -> Sequence[Mapping]:
+    if isinstance(to_be_grouped, Mapping):
+        ...
+    else:
+        to_be_grouped = dict(zip((i for i in range(len(to_be_grouped))), to_be_grouped))
+
+    if must_be_unique:
+        assert not any(is_multi(p) for p in to_be_grouped.values()), to_be_grouped
+
+    s = list(unary_union(v) for v in to_be_grouped.values())
+
+    union = closing(unary_union(s)).buffer(0)
+    groups = []
+    already_grouped = []
+
+    if not is_multi(union):
+        groups.append(to_be_grouped)
+    else:
+        for union_part in union.geoms:
+            intersectors = {}
+            for k, v in to_be_grouped.items():
+                if group_test(v, union_part):
+                    if must_be_unique:
+                        assert k not in already_grouped, f"{k, already_grouped, v}"
+                    intersectors[k] = v
+                    already_grouped.append(k)
+            groups.append(intersectors)
+
+    return groups
