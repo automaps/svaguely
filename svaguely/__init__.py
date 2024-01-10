@@ -9,7 +9,7 @@ __doc__ = """\
 Svaguely is a Python package for converting svg elements into shapely geometries
 """
 __author__ = "Christian Heider Lindbjerg <chen(at)mapspeople.com>"
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 
 PROJECT_NAME = __project__
 PROJECT_AUTHOR = __author__
