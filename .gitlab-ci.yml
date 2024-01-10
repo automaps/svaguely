@@ -65,19 +65,19 @@ unit-tests:
 
 # Deploy
 
-publish-pypi:
-  stage: Deploy
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH # on main
-  needs: ["unit-tests"]
-  image: python:latest
-  script:
-    - pip install poetry
-    - poetry build
-    - echo $CI_PROJECT_PATH
-    - poetry config repositories.gitlab "https://git.rtx.mapspeople.com/api/v4/projects/$CI_PROJECT_ID/packages/pypi"
-    - poetry config http-basic.gitlab gitlab-ci-token "$CI_JOB_TOKEN"
-    - poetry publish --repository gitlab
+#publish-pypi:
+#  stage: Deploy
+#  rules:
+#    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH # on main
+#  needs: ["unit-tests"]
+#  image: python:latest
+#  script:
+#    - pip install poetry
+#    - poetry build
+#    - echo $CI_PROJECT_PATH
+#    - poetry config repositories.gitlab "https://git.rtx.mapspeople.com/api/v4/projects/$CI_PROJECT_ID/packages/pypi"
+#    - poetry config http-basic.gitlab gitlab-ci-token "$CI_JOB_TOKEN"
+#    - poetry publish --repository gitlab
 
 pages:
   stage: Deploy
