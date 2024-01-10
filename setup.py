@@ -25,9 +25,9 @@ python_version_check()
 def read_reqs(file: str, path: Path) -> List[str]:
     """description"""
 
-    def readlines_ignore_comments(f: TextIO):
+    def readlines_ignore_comments(file_stream: TextIO):
         """description"""
-        return [a_ for a_ in f.readlines() if "#" not in a_ and a_]
+        return [a_ for a_ in file_stream.readlines() if "#" not in a_ and a_]
 
     def recursive_flatten_ignore_str(seq: Sequence) -> Sequence:
         """description"""
@@ -45,10 +45,10 @@ def read_reqs(file: str, path: Path) -> List[str]:
     def unroll_nested_reqs(req_str: str, base_path: Path) -> Sequence:
         """description"""
         if req_str.startswith("-r"):
-            with open(base_path / req_str.strip("-r").strip()) as f:
+            with open(base_path / req_str.strip("-r").strip()) as file_:
                 return [
                     unroll_nested_reqs(req.strip(), base_path)
-                    for req in readlines_ignore_comments(f)
+                    for req in readlines_ignore_comments(file_)
                 ]
         else:
             return (req_str,)
