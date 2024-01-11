@@ -25,17 +25,24 @@ def path_converter(
     item: svgelements.Path,
     w: Number = 1,
     h: Number = 1,
-    EPSILON: float = 1e-10,
+    snap_distance: float = 1e-7,
     step_size: float = 0.1,
 ) -> Optional[shapely.geometry.base.BaseGeometry]:
     sub_paths = []
     assert 0 < step_size < 1.0, f"{step_size=} was not within range [0..1.0]"
-    assert EPSILON > 0
+    assert snap_distance > 0
     try:
         points_along_path = []
         for segment in item:
             if isinstance(segment, svgelements.Move):
-                points_along_path.append(segment.point(0.0))
+                if (
+                    len(points_along_path) > 0
+                ):  # This will only happen if a move was made without a close. We assume this means a new subpath is started
+                    sub_paths.append(points_along_path.copy())
+                    points_along_path.clear()
+                    points_along_path.append(segment.point(1.0))
+                else:
+                    points_along_path.append(segment.point(0.0))
 
             elif isinstance(segment, svgelements.Line):
                 points_along_path.append(segment.point(1.0))
@@ -54,7 +61,6 @@ def path_converter(
                 points_along_path.append(segment.point(1.0))
                 sub_paths.append(points_along_path.copy())
                 points_along_path.clear()
-
             else:
                 raise NotImplementedError(f"{segment=}")
 
@@ -76,7 +82,7 @@ def path_converter(
         first_point = path_points[0]
 
         if len(path_points) >= 4 and first_point.equals_exact(
-            last_point, tolerance=EPSILON
+            last_point, tolerance=snap_distance
         ):  # 4
             # coordinates is minimum for a LinearRing, a in simple triangle start and end must the same
             path_points[-1] = first_point
@@ -100,10 +106,10 @@ def path_converter(
                         not poly.is_valid
                     ):  # bowtie issue can occur. Probably some rounding in the coordinates.
                         buffer_in = poly.buffer(
-                            -EPSILON, cap_style=3, join_style=2, mitre_limit=2
+                            -snap_distance, cap_style=3, join_style=2, mitre_limit=2
                         )
                         buffer_out = buffer_in.buffer(
-                            EPSILON, cap_style=3, join_style=2, mitre_limit=2
+                            snap_distance, cap_style=3, join_style=2, mitre_limit=2
                         )
                         valid_geom_list.append(buffer_out)
                     else:
