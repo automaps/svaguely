@@ -30,7 +30,7 @@ def path_converter(
 ) -> Optional[shapely.geometry.base.BaseGeometry]:
     sub_paths = []
     assert 0 < step_size < 1.0, f"{step_size=} was not within range [0..1.0]"
-    assert snap_distance > 0
+    assert snap_distance >= 0
     try:
         points_along_path = []
         for segment in item:
