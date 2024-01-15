@@ -20,7 +20,7 @@ def path_converter(
     snap_distance: float = 1e-7,
     step_size: float = 0.1,
 ) -> Optional[shapely.geometry.base.BaseGeometry]:
-    sub_paths = []
+    sub_paths = []  # TODO: REWRITE TO USE .as_subpaths() instead
 
     assert h == w, "w and h must be the same"
 
