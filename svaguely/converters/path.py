@@ -12,6 +12,8 @@ __author__ = "Christian Heider Lindbjerg <chen(at)mapspeople.com>"
 
 ASSUME_SUB_PATHS_ARE_HOLES = True
 
+logger = logging.getLogger(__name__)
+
 
 def path_converter(
     item: svgelements.Path,
@@ -63,7 +65,8 @@ def path_converter(
             sub_paths.append(points_along_path.copy())
 
     except Exception as p:
-        logging.error(p)
+        logger.error(p)
+
     was_polygon = []
     geoms = []
     for sp in sub_paths:

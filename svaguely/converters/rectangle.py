@@ -27,6 +27,7 @@ def rectangle_converter(
     corner_tr = shapely.geometry.Point(x_max, y_max)
     corner_br = shapely.geometry.Point(x_max, y_min)
     corner_bl = shapely.geometry.Point(x_min, y_min)
+
     linestring_rect = shapely.geometry.LineString(
         [corner_tl, corner_tr, corner_br, corner_bl, corner_tl]
     )
@@ -36,5 +37,4 @@ def rectangle_converter(
     linestring_rect_rotate = affinity.rotate(
         linestring_rect, angle_degrees, (centroid_x, centroid_y)
     )
-    polygonize_rect = shapely.geometry.Polygon(linestring_rect_rotate)
-    return polygonize_rect
+    return shapely.geometry.Polygon(linestring_rect_rotate)
