@@ -93,7 +93,7 @@ def path_converter(
             geoms.append(shapely.geometry.LineString(path_points))
             was_polygon.append(False)
         else:
-            logging.warning(f"empty path {path_points=}")
+            logger.warning(f"empty path {path_points=}")
 
     if ASSUME_SUB_PATHS_ARE_HOLES:
         if len(geoms) > 1:
@@ -131,14 +131,14 @@ def path_converter(
                                 rest_union = shapely.unary_union(rest).buffer(0)
                                 diff = shapely.difference(envelop, rest_union).buffer(0)
                             except Exception as ex:
-                                logging.error("UNION ERROR:", ex)
+                                logger.error("UNION ERROR:", ex)
 
                         if envelop.is_valid:
                             try:
                                 if diff.is_valid:
                                     output_geoms.append(diff)
                             except Exception as e:
-                                logging.error("PATH ERROR:", e)
+                                logger.error("PATH ERROR:", e)
                 return shapely.unary_union(output_geoms)
 
     if len(geoms) == 1:
@@ -149,7 +149,7 @@ def path_converter(
     )  # If its more than one geometry and its not all polygons (e.g. 1 polygon and 1 linestring), it returns a geometrycollection
 
     if gc.is_empty:
-        logging.warning("PATH PARSING: Geometry collection was empty")
+        logger.warning("PATH PARSING: Geometry collection was empty")
         return None
 
     return gc

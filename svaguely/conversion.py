@@ -17,6 +17,8 @@ from .data_models import SvgShapelyGeometry
 
 __author__ = "Christian Heider Lindbjerg <chen(at)mapspeople.com>"
 
+logger = logging.getLogger(__name__)
+
 
 def convert_elements(element: svgelements.Group) -> Dict[str, SvgShapelyGeometry]:
     return_dict = {}
@@ -85,14 +87,14 @@ def convert_elements(element: svgelements.Group) -> Dict[str, SvgShapelyGeometry
 
         elif isinstance(item, svgelements.Text):
             if False:
-                logging.warning(
+                logger.warning(
                     f"Text is not a supported class: {f'{item=} {type(item)}'}"
                 )
             continue  # TODO: Handle text
 
         else:
             if False:
-                logging.warning(f"Not supported class: {f'{item=} {type(item)}'}")
+                logger.warning(f"Not supported class: {f'{item=} {type(item)}'}")
             continue
 
         return_dict[shape_name] = SvgShapelyGeometry(
