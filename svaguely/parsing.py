@@ -57,6 +57,9 @@ def parse_svg(
                     element.values["attributes"]["desc"].replace("'", '"')
                 )
 
+        elif isinstance(element, svgelements.Title):
+            ...  # TODO implement
+
         else:
             if hasattr(element, "id") and element.id:
                 element_s = element.id

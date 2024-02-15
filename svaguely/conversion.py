@@ -12,6 +12,8 @@ from .converters import (
     polyline_converter,
     rectangle_converter,
     simpleline_converter,
+    text_converter,
+    image_converter,
 )
 from .data_models import SvgShapelyGeometry
 
@@ -23,6 +25,9 @@ logger = logging.getLogger(__name__)
 def convert_elements(element: svgelements.Group) -> Dict[str, SvgShapelyGeometry]:
     return_dict = {}
     name_counter = iter(count())
+
+    if not isinstance(element, svgelements.Group):
+        element = [element]
 
     for item in element:
         item_type = type(item)
@@ -86,13 +91,23 @@ def convert_elements(element: svgelements.Group) -> Dict[str, SvgShapelyGeometry
             shape_geometry = path_converter(item)
 
         elif isinstance(item, svgelements.Text):
+            # Text objects. The lack of a font engine makes this class more of a parsed stub class.
             if False:
                 logger.warning(
                     f"Text is not a supported class: {f'{item=} {type(item)}'}"
                 )
-            continue  # TODO: Handle text
+            shape_geometry, text_content = text_converter(item)
+
+        elif isinstance(item, svgelements.Pattern):
+            ...  # Pattern objects. These are parsed they are not currently assigned.
+
+        elif isinstance(item, svgelements.Image):
+            shape_geometry, image_content = image_converter(item)
+            ...  # Image creates SVGImage objects which will load Images if Pillow is installed with a call to .load(). Correct parsing of x, y, width, height and viewbox.
 
         else:
+            """Nested SVG objects. (Caveats see Non-Supported)."""
+
             if False:
                 logger.warning(f"Not supported class: {f'{item=} {type(item)}'}")
             continue
