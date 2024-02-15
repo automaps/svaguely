@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, Dict, Any
 
 import shapely
 import svgelements
@@ -10,15 +10,24 @@ __author__ = "Christian Heider Lindbjerg <chen(at)mapspeople.com>"
 
 def text_converter(
     item: svgelements.Text, w: Number = 1, h: Number = 1
-) -> Tuple[shapely.Point, str]:
+) -> Tuple[shapely.Point, str, Dict[str, Any]]:
     # minx, miny, maxx, maxy = item.bbox() # NO PATH AVAILABLE therefore no bbox, sorry.. Implementation for rendering needed
     #  rect = shapely.Polygon( [[minx, miny], [maxx, miny], [maxx, maxy], [minx, maxy], [minx, miny]]  )
 
-    # TODO: Enable
-    #    cy = h - item.cy # INVERT?
-    point = shapely.geometry.Point(item.x, item.y)
+    point = shapely.geometry.Point(
+        item.x, h - item.y
+    )  # TODO: COORDS ARE NOT NORMALISED BUG!
 
-    return point, item.text
+    return (
+        point,
+        item.text,
+        {
+            "size": item.font_size,
+            "style": item.font_style,
+            "weight": item.font_weight,
+            "height": item.line_height,
+        },
+    )
 
 
 if __name__ == "__main__":

@@ -33,10 +33,12 @@ def convert_elements(element: svgelements.Group) -> Dict[str, SvgShapelyGeometry
         item_type = type(item)
         item_filled = False
         item_fill_colour = None
+        extras = {}
 
         if hasattr(item, "fill"):
             if item.fill.value is not None:
                 item_filled = True
+
             if item.fill.hex:
                 item_fill_colour = item.fill.hex
 
@@ -92,11 +94,9 @@ def convert_elements(element: svgelements.Group) -> Dict[str, SvgShapelyGeometry
 
         elif isinstance(item, svgelements.Text):
             # Text objects. The lack of a font engine makes this class more of a parsed stub class.
-            if False:
-                logger.warning(
-                    f"Text is not a supported class: {f'{item=} {type(item)}'}"
-                )
-            shape_geometry, text_content = text_converter(item)
+            shape_geometry, text_content, font_meta_data = text_converter(item)
+            extras["text"] = text_content
+            extras["font"] = font_meta_data
 
         elif isinstance(item, svgelements.Pattern):
             ...  # Pattern objects. These are parsed they are not currently assigned.
@@ -104,7 +104,7 @@ def convert_elements(element: svgelements.Group) -> Dict[str, SvgShapelyGeometry
         elif isinstance(item, svgelements.Image):
             shape_geometry, image_content = image_converter(item)
             ...  # Image creates SVGImage objects which will load Images if Pillow is installed with a call to .load(). Correct parsing of x, y, width, height and viewbox.
-
+            extras["image"] = image_content
         else:
             """Nested SVG objects. (Caveats see Non-Supported)."""
 
@@ -118,6 +118,7 @@ def convert_elements(element: svgelements.Group) -> Dict[str, SvgShapelyGeometry
             item_value_class,
             item_type,
             item_filled,
+            extras,
             item_fill_colour,
         )
 
