@@ -22,7 +22,9 @@ __author__ = "Christian Heider Lindbjerg <chen(at)mapspeople.com>"
 logger = logging.getLogger(__name__)
 
 
-def convert_elements(element: svgelements.Group) -> Dict[str, SvgShapelyGeometry]:
+def convert_elements(
+    element: svgelements.Group, *, name_seperator: str = "|"
+) -> Dict[str, SvgShapelyGeometry]:
     return_dict = {}
     name_counter = iter(count())
 
@@ -43,7 +45,7 @@ def convert_elements(element: svgelements.Group) -> Dict[str, SvgShapelyGeometry
                 item_fill_colour = item.fill.hex
 
         if False:
-            shape_name = f"{element.id}_"
+            shape_name = f"{element.id}{name_seperator}"
         else:
             shape_name = ""
 
