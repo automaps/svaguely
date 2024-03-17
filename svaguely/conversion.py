@@ -1,8 +1,9 @@
 import logging
 from itertools import count
-from typing import Dict
+from typing import Dict, Optional
 
 import svgelements
+from warg import Number
 
 from .converters import (
     circle_converter,
@@ -23,7 +24,11 @@ logger = logging.getLogger(__name__)
 
 
 def convert_elements(
-    element: svgelements.Group, *, name_seperator: str = "|"
+    element: svgelements.Group,
+    *,
+    w: Optional[Number] = 1,
+    h: Optional[Number] = 1,
+    name_seperator: str = "|",
 ) -> Dict[str, SvgShapelyGeometry]:
     return_dict = {}
     name_counter = iter(count())
@@ -55,7 +60,7 @@ def convert_elements(
             shape_name += f"NoName{next(name_counter)}"
 
         if isinstance(item, svgelements.Group):
-            return_dict[shape_name] = convert_elements(item)
+            return_dict[shape_name] = convert_elements(item, w=w, h=h)
             continue
 
         if hasattr(item, "values") and "class" in item.values.keys():
@@ -64,39 +69,41 @@ def convert_elements(
             item_value_class = None
 
         if isinstance(item, svgelements.Rect):
-            shape_geometry = rectangle_converter(item)
+            shape_geometry = rectangle_converter(item, w=w, h=h)
 
         elif isinstance(item, svgelements.SimpleLine):
-            shape_geometry = simpleline_converter(item)
+            shape_geometry = simpleline_converter(item, w=w, h=h)
 
         elif isinstance(item, svgelements.Polyline):
-            shape_geometry = polyline_converter(item)
+            shape_geometry = polyline_converter(item, w=w, h=h)
 
         elif isinstance(item, svgelements.Polygon):
-            shape_geometry = polygon_converter(item)
+            shape_geometry = polygon_converter(item, w=w, h=h)
 
         elif isinstance(item, svgelements.Point):
-            shape_geometry = point_converter(item)
+            shape_geometry = point_converter(item, w=w, h=h)
 
         elif isinstance(item, svgelements.Circle):
             if False:
                 e = svgelements.Path(item)
                 e = e.reify()
-                shape_geometry = path_converter(e)
+                shape_geometry = path_converter(e, w=w, h=h)
             else:
-                shape_geometry = circle_converter(item)
+                shape_geometry = circle_converter(item, w=w, h=h)
 
         elif isinstance(item, (svgelements.Ellipse, svgelements.Curve)):
             e = svgelements.Path(item)
             e_reified = e.reify()
-            shape_geometry = path_converter(e_reified)
+            shape_geometry = path_converter(e_reified, w=w, h=h)
 
         elif isinstance(item, svgelements.Path):
-            shape_geometry = path_converter(item)
+            shape_geometry = path_converter(item, w=w, h=h)
 
         elif isinstance(item, svgelements.Text):
             # Text objects. The lack of a font engine makes this class more of a parsed stub class.
-            shape_geometry, text_content, font_meta_data = text_converter(item)
+            shape_geometry, text_content, font_meta_data = text_converter(
+                item, w=w, h=h
+            )
             extras["text"] = text_content
             extras["font"] = font_meta_data
 
@@ -104,7 +111,7 @@ def convert_elements(
             ...  # Pattern objects. These are parsed they are not currently assigned.
 
         elif isinstance(item, svgelements.Image):
-            shape_geometry, image_content = image_converter(item)
+            shape_geometry, image_content = image_converter(item, w=w, h=h)
             ...  # Image creates SVGImage objects which will load Images if Pillow is installed with a call to .load(). Correct parsing of x, y, width, height and viewbox.
             extras["image"] = image_content
         else:

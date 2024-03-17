@@ -9,7 +9,7 @@ __author__ = "Christian Heider Lindbjerg <chen(at)mapspeople.com>"
 
 
 def rectangle_converter(
-    item: svgelements.Rect, w: Number = 1, h: Number = 1
+    item: svgelements.Rect, *, w: Number = 1, h: Number = 1
 ) -> shapely.Polygon:
     assert h == w, "h and w must be the same"
 

@@ -9,7 +9,7 @@ __author__ = "Christian Heider Lindbjerg <chen(at)mapspeople.com>"
 
 
 def image_converter(
-    item: svgelements.Image, w: Number = 1, h: Number = 1
+    item: svgelements.Image, *, w: Number = 1, h: Number = 1
 ) -> Tuple[shapely.Polygon, bytes]:
     # TODO: Enable
     #    cy = h - item.cy # INVERT?

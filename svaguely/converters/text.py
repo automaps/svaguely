@@ -7,9 +7,11 @@ from warg import Number
 __all__ = ["text_converter"]
 __author__ = "Christian Heider Lindbjerg <chen(at)mapspeople.com>"
 
+CM_TO_PT = 28.3465
+
 
 def text_converter(
-    item: svgelements.Text, w: Number = 1, h: Number = 1
+    item: svgelements.Text, *, w: Number = 1, h: Number = 1
 ) -> Tuple[shapely.Point, str, Dict[str, Any]]:
     # minx, miny, maxx, maxy = item.bbox() # NO PATH AVAILABLE therefore no bbox, sorry.. Implementation for rendering needed
     #  rect = shapely.Polygon( [[minx, miny], [maxx, miny], [maxx, maxy], [minx, maxy], [minx, miny]]  )
@@ -22,7 +24,8 @@ def text_converter(
         point,
         item.text,
         {
-            "size": item.font_size,
+            "anchor": item.anchor,
+            "size_pt": item.font_size * CM_TO_PT,
             "style": item.font_style,
             "weight": item.font_weight,
             "height": item.line_height,

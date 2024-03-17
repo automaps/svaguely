@@ -5,6 +5,7 @@ import numpy
 import shapely
 import svgelements
 from jord.shapely_utilities import overlap_groups, split_enveloping_geometry
+from jord.shapely_utilities.base import clean_shape
 from warg import Number
 
 __all__ = ["path_converter"]
@@ -17,6 +18,7 @@ logger = logging.getLogger(__name__)
 
 def path_converter(
     item: svgelements.Path,
+    *,
     w: Number = 1,
     h: Number = 1,
     snap_distance: float = 1e-7,
@@ -123,13 +125,15 @@ def path_converter(
                         if len(rest) > 1:
                             stamped_geometries = recursive_stamping(rest)
 
-                            diff = shapely.difference(
-                                envelop, stamped_geometries
-                            ).buffer(0)
+                            diff = clean_shape(
+                                shapely.difference(envelop, stamped_geometries)
+                            )
                         else:
                             try:
-                                rest_union = shapely.unary_union(rest).buffer(0)
-                                diff = shapely.difference(envelop, rest_union).buffer(0)
+                                rest_union = clean_shape(shapely.unary_union(rest))
+                                diff = clean_shape(
+                                    shapely.difference(envelop, rest_union)
+                                )
                             except Exception as ex:
                                 logger.error("UNION ERROR:", ex)
 
@@ -180,10 +184,12 @@ def recursive_stamping(
                     stamped_out_geoms.append(envelope)
                 else:  # If the rest is multiple polygons, we need to stamp them again
                     stamped_out_geoms.append(
-                        shapely.difference(envelope, recursive_stamping(rest)).buffer(0)
+                        clean_shape(
+                            shapely.difference(envelope, recursive_stamping(rest))
+                        )
                     )
 
             else:  # There was no enveloping geometry
                 stamped_out_geoms.extend(grouped_geometries)
 
-    return shapely.unary_union(stamped_out_geoms).buffer(0)
+    return clean_shape(shapely.unary_union(stamped_out_geoms))
