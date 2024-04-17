@@ -29,7 +29,7 @@ def parse_svg(
     """
 
     if output_space:
-        if isinstance(output_space, Number):
+        if isinstance(output_space, (float, int)):
             w = h = output_space
         else:
             w, h = output_space
@@ -42,7 +42,7 @@ def parse_svg(
         svg_filestream = io.BytesIO(svg_filestream)
 
     elif not os.path.isfile(svg_filestream):
-        svg_filestream = io.StringIO(svg_filestream)
+        svg_filestream = io.StringIO(str(svg_filestream))
 
     svg = svgelements.SVG.parse(
         svg_filestream,
