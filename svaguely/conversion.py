@@ -114,11 +114,17 @@ def convert_elements(
             shape_geometry, image_content = image_converter(item, w=w, h=h)
             ...  # Image creates SVGImage objects which will load Images if Pillow is installed with a call to .load(). Correct parsing of x, y, width, height and viewbox.
             extras["image"] = image_content
+        elif isinstance(item, svgelements.Use):
+            for ith, e in enumerate(item):
+                return_dict[f"{shape_name}_{ith}"] = convert_elements(e, w=w, h=h)
+            continue
         else:
             """Nested SVG objects. (Caveats see Non-Supported)."""
 
-            if False:
-                logger.warning(f"Not supported class: {f'{item=} {type(item)}'}")
+            if True:
+                logger.warning(
+                    f"Not supported class: {f'{item.string_xml()} {type(item)}'}"
+                )
             continue
 
         return_dict[shape_name] = SvgShapelyGeometry(

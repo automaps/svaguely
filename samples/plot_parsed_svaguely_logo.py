@@ -6,7 +6,9 @@ from svaguely import parse_svg
 from warg import flatten_mapping
 
 svg_elements, _ = parse_svg(
-    Path(__file__).parent.parent / "tests" / "fixtures" / "svaguely.svg", output_space=1
+    # Path(__file__).parent.parent / "tests" / "fixtures" / "svaguely.svg",
+    Path(__file__).parent.parent / "tests" / "fixtures" / "svg_logo.svg",
+    output_space=1,
 )
 
 svg_elements = flatten_mapping(svg_elements)

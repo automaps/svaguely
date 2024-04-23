@@ -11,3 +11,7 @@ def test_string_parse():
 
 def test_file_parse():
     print(parse_svg(Path(__file__).parent / "fixtures" / "svaguely.svg"))
+
+
+def test_file_parse_use():
+    print(parse_svg(Path(__file__).parent / "fixtures" / "svg_logo.svg"))
