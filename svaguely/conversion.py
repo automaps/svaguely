@@ -7,6 +7,7 @@ from warg import Number
 
 from .converters import (
     circle_converter,
+    image_converter,
     path_converter,
     point_converter,
     polygon_converter,
@@ -14,7 +15,6 @@ from .converters import (
     rectangle_converter,
     simpleline_converter,
     text_converter,
-    image_converter,
 )
 from .data_models import SvgShapelyGeometry
 

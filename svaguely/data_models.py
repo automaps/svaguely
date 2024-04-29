@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, Callable, Optional, Mapping
+from typing import Any, Callable, Mapping, Optional
 
 from shapely.geometry.base import BaseGeometry
 
