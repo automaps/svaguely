@@ -1,5 +1,6 @@
-from svaguely import parse_svg
 from warg import ensure_existence, flatten_mapping
+
+from svaguely import parse_svg
 
 exclude_dir = ensure_existence("exclude")
 svg_file_name = "mapspeople.svg"
