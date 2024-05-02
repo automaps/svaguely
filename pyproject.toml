@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "svaguely"
-version = "0.0.1"
+version = "0.0.3"
 description = ""
 authors = ["Christian Heider Lindbjerg <chen@mapspeople.com>"]
 readme = "README.md"
