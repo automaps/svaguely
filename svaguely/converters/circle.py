@@ -7,7 +7,7 @@ __author__ = "Christian Heider Lindbjerg <chen(at)mapspeople.com>"
 
 
 def circle_converter(
-    item: svgelements.Circle, w: Number = 1, h: Number = 1
+    item: svgelements.Circle, *, w: Number = 1, h: Number = 1
 ) -> shapely.Polygon:
     cx = item.cx
     cy = h - item.cy

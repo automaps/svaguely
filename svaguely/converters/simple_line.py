@@ -10,7 +10,7 @@ __author__ = "Christian Heider Lindbjerg <chen(at)mapspeople.com>"
 
 
 def simpleline_converter(
-    item: svgelements.SimpleLine, w: Number = 1, h: Number = 1
+    item: svgelements.SimpleLine, *, w: Number = 1, h: Number = 1
 ) -> shapely.LineString:
     line_x1 = item.implicit_x1
     line_y1 = h - item.implicit_y1

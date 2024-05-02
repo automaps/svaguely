@@ -7,7 +7,7 @@ __author__ = "Christian Heider Lindbjerg <chen(at)mapspeople.com>"
 
 
 def point_converter(
-    item: svgelements.Point, w: Number = 1, h: Number = 1
+    item: svgelements.Point, *, w: Number = 1, h: Number = 1
 ) -> shapely.Point:
     cx = item.x
     cy = h - item.y

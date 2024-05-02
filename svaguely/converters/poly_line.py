@@ -11,7 +11,7 @@ __author__ = "Christian Heider Lindbjerg <chen(at)mapspeople.com>"
 
 
 def polyline_converter(
-    item: svgelements.Polyline, w: Number = 1, h: Number = 1, EPSILON=0.00000000001
+    item: svgelements.Polyline, *, w: Number = 1, h: Number = 1, EPSILON=0.00000000001
 ) -> Union[shapely.Polygon, shapely.LineString]:
     polyline_points = item.points
     rotate_x = polyline_points[0].x

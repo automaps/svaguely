@@ -1,6 +1,7 @@
 import numpy
 import shapely
 import svgelements
+from jord.shapely_utilities.base import clean_shape
 from shapely import affinity
 from warg import Number
 
@@ -10,7 +11,7 @@ __author__ = "Christian Heider Lindbjerg <chen(at)mapspeople.com>"
 
 
 def polygon_converter(
-    item: svgelements.Polygon, w: Number = 1, h: Number = 1
+    item: svgelements.Polygon, *, w: Number = 1, h: Number = 1
 ) -> shapely.geometry.base.BaseGeometry:
     area_points = item.points
     rotate_x = area_points[0].x
@@ -33,7 +34,7 @@ def polygon_converter(
     rotated_geom = affinity.rotate(area_linestring, angle_degrees, (rotate_x, rotate_y))
 
     if not rotated_geom.is_valid:
-        rotated_geom = rotated_geom.buffer(0)
+        rotated_geom = clean_shape(rotated_geom)
 
     if rotated_geom.is_ring:
         out_geom = shapely.geometry.Polygon(rotated_geom)
