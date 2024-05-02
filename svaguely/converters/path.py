@@ -5,6 +5,7 @@ import numpy
 import shapely
 import svgelements
 from jord.shapely_utilities import overlap_groups, split_enveloping_geometry
+from jord.shapely_utilities.base import clean_shape
 from warg import Number
 
 __all__ = ["path_converter"]
@@ -12,15 +13,18 @@ __author__ = "Christian Heider Lindbjerg <chen(at)mapspeople.com>"
 
 ASSUME_SUB_PATHS_ARE_HOLES = True
 
+logger = logging.getLogger(__name__)
+
 
 def path_converter(
     item: svgelements.Path,
+    *,
     w: Number = 1,
     h: Number = 1,
     snap_distance: float = 1e-7,
     step_size: float = 0.1,
 ) -> Optional[shapely.geometry.base.BaseGeometry]:
-    sub_paths = []
+    sub_paths = []  # TODO: REWRITE TO USE .as_subpaths() instead
 
     assert h == w, "w and h must be the same"
 
@@ -63,7 +67,8 @@ def path_converter(
             sub_paths.append(points_along_path.copy())
 
     except Exception as p:
-        logging.error(p)
+        logger.error(p)
+
     was_polygon = []
     geoms = []
     for sp in sub_paths:
@@ -90,7 +95,7 @@ def path_converter(
             geoms.append(shapely.geometry.LineString(path_points))
             was_polygon.append(False)
         else:
-            logging.warning(f"empty path {path_points=}")
+            logger.warning(f"empty path {path_points=}")
 
     if ASSUME_SUB_PATHS_ARE_HOLES:
         if len(geoms) > 1:
@@ -120,22 +125,24 @@ def path_converter(
                         if len(rest) > 1:
                             stamped_geometries = recursive_stamping(rest)
 
-                            diff = shapely.difference(
-                                envelop, stamped_geometries
-                            ).buffer(0)
+                            diff = clean_shape(
+                                shapely.difference(envelop, stamped_geometries)
+                            )
                         else:
                             try:
-                                rest_union = shapely.unary_union(rest).buffer(0)
-                                diff = shapely.difference(envelop, rest_union).buffer(0)
+                                rest_union = clean_shape(shapely.unary_union(rest))
+                                diff = clean_shape(
+                                    shapely.difference(envelop, rest_union)
+                                )
                             except Exception as ex:
-                                logging.error("UNION ERROR:", ex)
+                                logger.error("UNION ERROR:", ex)
 
                         if envelop.is_valid:
                             try:
                                 if diff.is_valid:
                                     output_geoms.append(diff)
                             except Exception as e:
-                                logging.error("PATH ERROR:", e)
+                                logger.error("PATH ERROR:", e)
                 return shapely.unary_union(output_geoms)
 
     if len(geoms) == 1:
@@ -146,7 +153,7 @@ def path_converter(
     )  # If its more than one geometry and its not all polygons (e.g. 1 polygon and 1 linestring), it returns a geometrycollection
 
     if gc.is_empty:
-        logging.warning("PATH PARSING: Geometry collection was empty")
+        logger.warning("PATH PARSING: Geometry collection was empty")
         return None
 
     return gc
@@ -177,10 +184,12 @@ def recursive_stamping(
                     stamped_out_geoms.append(envelope)
                 else:  # If the rest is multiple polygons, we need to stamp them again
                     stamped_out_geoms.append(
-                        shapely.difference(envelope, recursive_stamping(rest)).buffer(0)
+                        clean_shape(
+                            shapely.difference(envelope, recursive_stamping(rest))
+                        )
                     )
 
             else:  # There was no enveloping geometry
                 stamped_out_geoms.extend(grouped_geometries)
 
-    return shapely.unary_union(stamped_out_geoms).buffer(0)
+    return clean_shape(shapely.unary_union(stamped_out_geoms))

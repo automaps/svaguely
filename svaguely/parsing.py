@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any, Dict, Optional, Tuple, Union
 
 import svgelements
+from warg import Number
 
 from .conversion import convert_elements
 from .data_models import SvgShapelyGeometry
@@ -16,7 +17,8 @@ __author__ = "Christian Heider Lindbjerg <chen(at)mapspeople.com>"
 
 
 def parse_svg(
-    svg_filestream: Union[Path, str, bytes]
+    svg_filestream: Union[Path, str, bytes],
+    output_space: Optional[Union[Number, Tuple[Number, Number]]] = None,
 ) -> Tuple[Dict[Any, Dict[str, SvgShapelyGeometry]], Optional[Any]]:
     """
     Main function of converting. This reads the svg and parses it.
@@ -26,14 +28,21 @@ def parse_svg(
     :return: dataclass of svg elements and dataclass of metadata
     """
 
-    w = h = 1
+    if output_space:
+        if isinstance(output_space, (float, int)):
+            w = h = output_space
+        else:
+            w, h = output_space
+    else:
+        w = h = 1
+
     name_counter = iter(count())
 
     if isinstance(svg_filestream, bytes):
         svg_filestream = io.BytesIO(svg_filestream)
 
     elif not os.path.isfile(svg_filestream):
-        svg_filestream = io.StringIO(svg_filestream)
+        svg_filestream = io.StringIO(str(svg_filestream))
 
     svg = svgelements.SVG.parse(
         svg_filestream,
@@ -57,12 +66,15 @@ def parse_svg(
                     element.values["attributes"]["desc"].replace("'", '"')
                 )
 
+        elif isinstance(element, svgelements.Title):
+            ...  # TODO implement
+
         else:
             if hasattr(element, "id") and element.id:
                 element_s = element.id
             else:
                 element_s = f"NoName{next(name_counter)}"
 
-            shape_elements[element_s] = convert_elements(element)
+            shape_elements[element_s] = convert_elements(element, w=w, h=h)
 
     return shape_elements, metadata_dict

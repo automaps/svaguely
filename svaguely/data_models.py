@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, Callable
+from typing import Any, Callable, Mapping, Optional
 
 from shapely.geometry.base import BaseGeometry
 
@@ -14,6 +14,7 @@ class SvgShapelyGeometry:
     item_value_class: str
     item_type: str
     item_filled: bool
+    extras: Optional[Mapping[str, Any]] = None
     item_fill_colour: str = None
 
 
