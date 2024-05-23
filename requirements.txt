@@ -7,3 +7,5 @@ pytz
 shapely
 svgelements
 warg
+cairosvg
+pytesseract
