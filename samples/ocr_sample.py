@@ -14,7 +14,7 @@ detection = namedtuple("detection", ("text", "left", "bottom", "right", "top", "
 detection_shapely = namedtuple("detection_shapely", ("text", "polygon"))
 
 
-def horizontal_cluster(rendered_img_path: Path, detections: Mapping) -> None:
+def horizontal_cluster(rendered_image_path: Path, detections: Mapping) -> None:
     import cv2
 
     clusters = {}
@@ -28,7 +28,7 @@ def horizontal_cluster(rendered_img_path: Path, detections: Mapping) -> None:
         for dt in detection_tuples
     ]
 
-    img = cv2.imread(str(rendered_img_path))
+    img = cv2.imread(str(rendered_image_path))
 
     yx_max = numpy.array((img.shape)).round().astype(numpy.int32)[:2]
 
