@@ -86,3 +86,8 @@ pages:
     - pip install sphinx_rtd_theme # Uses this sphinx theme
   rules:
     - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH # On main
+
+
+publish-package:
+  stage: Deploy
+  extends: .publish-python-package-poetry

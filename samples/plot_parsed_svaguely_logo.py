@@ -2,9 +2,8 @@ from pathlib import Path
 
 import geopandas
 from matplotlib import pyplot
-from warg import flatten_mapping
-
 from svaguely import parse_svg
+from warg import flatten_mapping
 
 svg_elements, _ = parse_svg(
     # Path(__file__).parent.parent / "tests" / "fixtures" / "svaguely.svg",

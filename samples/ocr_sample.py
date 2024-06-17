@@ -2,13 +2,11 @@ from collections import namedtuple
 from pathlib import Path
 from typing import Mapping
 
-import cv2
 import numpy
 import shapely
 
-from mi_companion.submodules.svaguely.svaguely.recognition import run_ocr_no_cluster
+from samples.recognition import run_ocr_no_cluster
 from mi_companion.submodules.svaguely.svaguely.rendering import render_svg
-
 
 detection = namedtuple("detection", ("text", "left", "bottom", "right", "top", "page"))
 detection_shapely = namedtuple("detection_shapely", ("text", "polygon"))
