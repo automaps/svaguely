@@ -1,4 +1,4 @@
-FROM python:3.10
+FROM python:3.10 as base
 LABEL authors="chen"
 
 # Upgrade pip
@@ -14,6 +14,8 @@ COPY pyproject.toml poetry.lock README.md ./
 
 # Install Python dependencies
 RUN poetry install --no-root --no-cache
+
+FROM base as svaguely
 
 # Copy the content of the local src directory to the working directory
 COPY svaguely/ svaguely

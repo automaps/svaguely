@@ -9,7 +9,9 @@ MIN_PYTHON_MAJOR = 3
 MIN_PYTHON_MINOR = 8
 
 
-def python_version_check(major: int = MIN_PYTHON_MAJOR, minor: int = MIN_PYTHON_MINOR):
+def python_version_check(
+    major: int = MIN_PYTHON_MAJOR, minor: int = MIN_PYTHON_MINOR
+) -> None:
     """description"""
     import sys
 
@@ -40,7 +42,7 @@ def read_reqs(file: str, path: Path) -> List[str]:
                 *recursive_flatten_ignore_str(seq[0]),
                 *recursive_flatten_ignore_str(seq[1:]),
             )
-        return (*seq[:1], *recursive_flatten_ignore_str(seq[1:]))
+        return *seq[:1], *recursive_flatten_ignore_str(seq[1:])
 
     def unroll_nested_reqs(req_str: str, base_path: Path) -> Sequence:
         """description"""
