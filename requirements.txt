@@ -1,7 +1,9 @@
 
 apppath
+cairosvg
 crc32c
 jord[shapely]
+pytesseract
 pytest
 pytz
 shapely

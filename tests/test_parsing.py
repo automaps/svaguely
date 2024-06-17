@@ -4,7 +4,7 @@ from svaguely import parse_svg
 
 
 def test_string_parse():
-    from fixtures import svg_snippets
+    from .fixtures import svg_snippets
 
     print(parse_svg(svg_snippets.svaguely_logo))
 
