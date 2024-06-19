@@ -1,7 +1,6 @@
-import math
-
 import svgelements
-from svaguely.conversion import circle_converter, point_converter, rectangle_converter
+
+from svaguely.conversion import rectangle_converter
 
 eps = 0.001
 loose_eps = 0.1
