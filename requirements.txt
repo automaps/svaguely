@@ -1,8 +1,8 @@
-
 apppath
 cairosvg
 crc32c
 jord[shapely]
+numpy~=1.24.0
 pytesseract
 pytest
 pytz
