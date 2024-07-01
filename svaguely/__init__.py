@@ -27,9 +27,7 @@ PROJECT_YEAR = 2023
 PROJECT_ORGANISATION = "MapsPeople"
 PROJECT_VERSION = __version__
 
-
 logger = logging.getLogger(__name__)
-
 
 __all__ = ["convert_elements", "parse_svg"]
 
