@@ -1,19 +1,19 @@
-from warg import ensure_existence, flatten_mapping
+import logging
+from pathlib import Path
 
 from svaguely import parse_svg
+from warg import flatten_mapping
 
-exclude_dir = ensure_existence("exclude")
-svg_file_name = "mapspeople.svg"
+svg_file_name = (
+    Path.home() / "Downloads" / "Monticello_Siteplan_Ver_01_TOURGUIDE_202303091.svg"
+)
 
-svg_elements, _ = parse_svg(exclude_dir / svg_file_name, output_space=1)
+svg_elements, _ = parse_svg(svg_file_name, output_space=1)
 
 svg_elements = flatten_mapping(svg_elements)
 
-collected = []
+logger = logging.getLogger(__name__)
 
-for ith, (element_name, element_shape) in enumerate(svg_elements.items()):
-    collected.append(element_shape.geometry)
-
-with open((exclude_dir / svg_file_name).with_suffix(".wkt"), "w") as f:
-    for element in collected:
-        f.write(element.wkt)
+for ith, (element_unique_id, element) in enumerate(svg_elements.items()):
+    logger.warning(element_unique_id)
+    # logger.warning(element)

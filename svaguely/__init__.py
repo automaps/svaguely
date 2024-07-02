@@ -33,15 +33,15 @@ __all__ = ["convert_elements", "parse_svg"]
 
 
 def convert_elements(
-    element: svgelements.Group,
+    elements: svgelements.Group,
     *,
     w: Optional[Number] = 1,
     h: Optional[Number] = 1,
     name_seperator: str = "|",
-) -> Dict[str, SvgShapelyGeometry]:
+) -> Dict[str, SvgElement]:
     """
 
-    :param element:
+    :param elements:
     :param w:
     :param h:
     :param name_seperator:
@@ -50,108 +50,136 @@ def convert_elements(
     return_dict = {}
     name_counter = iter(count())
 
-    if not isinstance(element, svgelements.Group):
-        element = [element]
+    if not isinstance(elements, svgelements.Group):
+        elements = [elements]
 
-    for item in element:
-        item_type = type(item)
-        item_filled = False
-        item_fill_colour = None
+    for element in elements:
+        element_type = type(element)
+        element_filled = False
+        element_fill_color = None
+        element_stroke_width = None
+        element_stroke_color = None
+        element_color = None
+        element_name = None
+
         extras = {}
 
-        if hasattr(item, "fill"):
-            if item.fill.value is not None:
-                item_filled = True
+        element_id = element.id
 
-            if item.fill.hex:
-                item_fill_colour = item.fill.hex
+        if hasattr(element, "color") and element.color:
+            element_color = element.color
 
-        if False:
-            shape_name = f"{element.id}{name_seperator}"
-        else:
-            shape_name = ""
+        if hasattr(element, "fill") and element.fill.hex:
+            element_fill_color = element.fill.hex
 
-        if hasattr(item, "id") and item.id:
-            shape_name += f"{item.id}"
-        else:
-            shape_name += f"NoName{next(name_counter)}"
+        if hasattr(element, "stroke") and element.stroke.hex:
+            element_stroke_color = element.stroke.hex
 
-        if isinstance(item, svgelements.Group):
-            return_dict[shape_name] = convert_elements(item, w=w, h=h)
+        if hasattr(element, "stroke_width") and element.stroke_width:
+            element_stroke_width = element.stroke_width
+
+        if hasattr(element, "values"):
+            for key, value in element.values.items():
+                if "label" in key:
+                    element_name = value
+                elif "data-name" in key:
+                    element_name = value
+
+            extras.update(element.values)
+
+        element_unique_id = element_unique_id_base = (
+            f"{element_id}{name_seperator}{element_name}"
+        )
+        while element_unique_id in return_dict:
+            element_unique_id = (
+                f"{element_unique_id_base}{name_seperator}{next(name_counter)}"
+            )
+
+        if isinstance(element, svgelements.Group):
+            return_dict[element_unique_id] = convert_elements(
+                element, w=w, h=h, name_seperator=name_seperator
+            )
             continue
 
-        if hasattr(item, "values") and "class" in item.values.keys():
-            item_value_class = item.values["class"]
-        else:
-            item_value_class = None
+        if isinstance(element, svgelements.Rect):
+            shape_geometry = rectangle_converter(element, w=w, h=h)
 
-        if isinstance(item, svgelements.Rect):
-            shape_geometry = rectangle_converter(item, w=w, h=h)
+        elif isinstance(element, svgelements.SimpleLine):
+            shape_geometry = simpleline_converter(element, w=w, h=h)
 
-        elif isinstance(item, svgelements.SimpleLine):
-            shape_geometry = simpleline_converter(item, w=w, h=h)
+        elif isinstance(element, svgelements.Polyline):
+            shape_geometry = polyline_converter(element, w=w, h=h)
 
-        elif isinstance(item, svgelements.Polyline):
-            shape_geometry = polyline_converter(item, w=w, h=h)
+        elif isinstance(element, svgelements.Polygon):
+            shape_geometry = polygon_converter(element, w=w, h=h)
 
-        elif isinstance(item, svgelements.Polygon):
-            shape_geometry = polygon_converter(item, w=w, h=h)
+        elif isinstance(element, svgelements.Point):
+            shape_geometry = point_converter(element, w=w, h=h)
 
-        elif isinstance(item, svgelements.Point):
-            shape_geometry = point_converter(item, w=w, h=h)
-
-        elif isinstance(item, svgelements.Circle):
+        elif isinstance(element, svgelements.Circle):
             if False:
-                e = svgelements.Path(item)
+                e = svgelements.Path(element)
                 e = e.reify()
                 shape_geometry = path_converter(e, w=w, h=h)
             else:
-                shape_geometry = circle_converter(item, w=w, h=h)
+                shape_geometry = circle_converter(element, w=w, h=h)
 
-        elif isinstance(item, (svgelements.Ellipse, svgelements.Curve)):
-            e = svgelements.Path(item)
+        elif isinstance(element, (svgelements.Ellipse, svgelements.Curve)):
+            e = svgelements.Path(element)
             e_reified = e.reify()
             shape_geometry = path_converter(e_reified, w=w, h=h)
 
-        elif isinstance(item, svgelements.Path):
-            shape_geometry = path_converter(item, w=w, h=h)
+        elif isinstance(element, svgelements.Path):
+            shape_geometry = path_converter(element, w=w, h=h)
 
-        elif isinstance(item, svgelements.Text):
+        elif isinstance(element, svgelements.Text):
             # Text objects. The lack of a font engine makes this class more of a parsed stub class.
             shape_geometry, text_content, font_meta_data = text_converter(
-                item, w=w, h=h
+                element, w=w, h=h
             )
             extras["text"] = text_content
             extras["font"] = font_meta_data
 
-        elif isinstance(item, svgelements.Pattern):
+        elif isinstance(element, svgelements.Pattern):
             ...  # Pattern objects. These are parsed they are not currently assigned.
 
-        elif isinstance(item, svgelements.Image):
-            shape_geometry, image_content = image_converter(item, w=w, h=h)
+        elif isinstance(element, svgelements.Image):
+            shape_geometry, image_content = image_converter(element, w=w, h=h)
             ...  # Image creates SVGImage objects which will load Images if Pillow is installed with a call to .load(). Correct parsing of x, y, width, height and viewbox.
             extras["image"] = image_content
-        elif isinstance(item, svgelements.Use):
-            for ith, e in enumerate(item):
-                return_dict[f"{shape_name}_{ith}"] = convert_elements(e, w=w, h=h)
+        elif isinstance(element, svgelements.Use):
+            for ith, e in enumerate(element):
+                return_dict[f"{element_name}_{ith}"] = convert_elements(e, w=w, h=h)
             continue
+
+        elif isinstance(element, svgelements.Desc) and False:  # extract metadata
+            if element.id == METADATA_KEY:  # check if its our description metadata
+                assert metadata_dict is None
+                metadata_dict = json.loads(
+                    element.values["attributes"]["desc"].replace("'", '"')
+                )
+
+        elif isinstance(element, svgelements.Title) and False:
+            ...  # TODO implement
         else:
             """Nested SVG objects. (Caveats see Non-Supported)."""
 
             if True:
                 logger.warning(
-                    f"Not supported class: {f'{item.string_xml()} {type(item)}'}"
+                    f"Not supported class: {f'{element.string_xml()} {type(element)}'}"
                 )
             continue
 
-        return_dict[shape_name] = SvgShapelyGeometry(
-            shape_name,
-            shape_geometry,
-            item_value_class,
-            item_type,
-            item_filled,
-            extras,
-            item_fill_colour,
+        return_dict[element_unique_id] = SvgElement(
+            element_id=element_id,
+            element_name=element_name,
+            geometry=shape_geometry,
+            element_type=str(element_type),
+            extras=extras,
+            color=element_color,
+            fill_color=element_fill_color,
+            stroke_color=element_stroke_color,
+            stroke_width=element_stroke_width,
         )
 
     return return_dict
@@ -160,7 +188,8 @@ def convert_elements(
 def parse_svg(
     svg_filestream: Union[Path, str, bytes],
     output_space: Optional[Union[Number, Tuple[Number, Number]]] = None,
-) -> Tuple[Dict[Any, Dict[str, SvgShapelyGeometry]], Optional[Any]]:
+    name_seperator: str = "|",
+) -> Tuple[Dict[Any, Dict[str, SvgElement]], Optional[Any]]:
     """
     Main function of converting. This reads the svg and parses it.
     Then converts the svgelements into classes with shapely geometries.
@@ -212,11 +241,13 @@ def parse_svg(
             ...  # TODO implement
 
         else:
-            if hasattr(element, "id") and element.id:
-                element_s = element.id
-            else:
-                element_s = f"NoName{next(name_counter)}"
+            element_id = element.id
+            element_unique_id = str(element_id)
+            while element_unique_id in shape_elements:
+                element_unique_id = f"{element_id}{name_seperator}{next(name_counter)}"
 
-            shape_elements[element_s] = convert_elements(element, w=w, h=h)
+            shape_elements[element_unique_id] = convert_elements(
+                element, w=w, h=h, name_seperator=name_seperator
+            )
 
     return shape_elements, metadata_dict
