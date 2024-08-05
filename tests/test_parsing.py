@@ -2,6 +2,7 @@ from pathlib import Path
 
 from svaguely import parse_svg
 
+
 def test_string_parse():
     from .fixtures import svg_snippets
 
