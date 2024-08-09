@@ -145,7 +145,8 @@ def convert_elements(
 
         elif isinstance(element, svgelements.Image):
             shape_geometry, image_content = image_converter(element, w=w, h=h)
-            ...  # Image creates SVGImage objects which will load Images if Pillow is installed with a call to .load(). Correct parsing of x, y, width, height and viewbox.
+            ...  # Image creates SVGImage objects which will load Images if Pillow is installed with a call to
+            # .load(). Correct parsing of x, y, width, height and viewbox.
             extras["image"] = image_content
         elif isinstance(element, svgelements.Use):
             for ith, e in enumerate(element):

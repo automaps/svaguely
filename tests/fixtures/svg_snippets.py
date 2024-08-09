@@ -83,12 +83,14 @@ svaguely_logo = """<?xml version="1.0" encoding="UTF-8" standalone="no"?>
                 cy="80.846626"
                 r="0.40283385"/>
         <path
-                style="fill:none;stroke:#000000;stroke-width:0.265;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1"
+                style="fill:none;stroke:#000000;stroke-width:0.265;stroke-linecap:round;stroke-dasharray
+                :none;stroke-opacity:1"
                 d="m 86.049784,81.931929 4.610211,0.358073 -1.924651,-1.387538 z"
                 id="path3"/>
         <text
                 xml:space="preserve"
-                style="font-size:12.7px;fill:none;stroke:#000000;stroke-width:0.264999;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1"
+                style="font-size:12.7px;fill:none;stroke:#000000;stroke-width:0.264999;stroke-linecap:round
+                ;stroke-dasharray:none;stroke-opacity:1"
                 x="84.919601"
                 y="83.789444"
                 id="text3"><tspan

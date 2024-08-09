@@ -82,6 +82,7 @@ __author__ = author
 
 
 class SvaguelyPackage:
+
     @property
     def test_dependencies(self) -> list:
         return read_reqs(

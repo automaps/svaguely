@@ -13,7 +13,8 @@ CM_TO_PT = 28.3465
 def text_converter(
     item: svgelements.Text, *, w: Number = 1, h: Number = 1
 ) -> Tuple[shapely.Point, str, Dict[str, Any]]:
-    # minx, miny, maxx, maxy = item.bbox() # NO PATH AVAILABLE therefore no bbox, sorry.. Implementation for rendering needed
+    # minx, miny, maxx, maxy = item.bbox() # NO PATH AVAILABLE therefore no bbox, sorry.. Implementation for
+    # rendering needed
     #  rect = shapely.Polygon( [[minx, miny], [maxx, miny], [maxx, maxy], [minx, maxy], [minx, miny]]  )
 
     point = shapely.geometry.Point(

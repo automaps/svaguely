@@ -1,8 +1,9 @@
 import logging
 from pathlib import Path
 
-from svaguely import parse_svg
 from warg import flatten_mapping
+
+from svaguely import parse_svg
 
 svg_file_name = (
     Path.home() / "Downloads" / "Monticello_Siteplan_Ver_01_TOURGUIDE_202303091.svg"
