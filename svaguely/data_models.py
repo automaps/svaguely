@@ -1,10 +1,10 @@
 from dataclasses import dataclass
 from typing import Any, Callable, Mapping, Optional
 
-from shapely.geometry.base import BaseGeometry
-
 __all__ = ["SvgElement", "SvgMetadata"]
 __author__ = "Christian Heider Lindbjerg <chen(at)mapspeople.com>"
+
+import shapely
 
 
 @dataclass
@@ -13,7 +13,7 @@ class SvgElement:
 
     element_type: str
 
-    geometry: BaseGeometry
+    geometry: shapely.geometry.base.BaseGeometry
 
     element_name: Optional[str]
 
