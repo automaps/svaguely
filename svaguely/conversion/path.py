@@ -36,7 +36,8 @@ def path_converter(
             if isinstance(segment, svgelements.Move):
                 if (
                     len(points_along_path) > 0
-                ):  # This will only happen if a move was made without a close. We assume this means a new subpath is started
+                ):  # This will only happen if a move was made without a close. We assume this means a new subpath
+                    # is started
                     sub_paths.append(points_along_path.copy())
                     points_along_path.clear()
                     points_along_path.append(segment.point(1.0))
@@ -150,7 +151,8 @@ def path_converter(
 
     gc = shapely.GeometryCollection(
         geoms
-    )  # If its more than one geometry and its not all polygons (e.g. 1 polygon and 1 linestring), it returns a geometrycollection
+    )  # If its more than one geometry and its not all polygons (e.g. 1 polygon and 1 linestring),
+    # it returns a geometrycollection
 
     if gc.is_empty:
         logger.warning("PATH PARSING: Geometry collection was empty")
