@@ -6,34 +6,36 @@ import shapely
 __all__ = ["SvgElement", "SvgMetadata"]
 __author__ = "Christian Heider Lindbjerg <chen(at)mapspeople.com>"
 
+
 @dataclass
 class SvgElement:
-  element_id: str
+    element_id: str
 
-  element_type: str
+    element_type: str
 
-  geometry: shapely.geometry.base.BaseGeometry
+    geometry: shapely.geometry.base.BaseGeometry
 
-  element_name: Optional[str]
+    element_name: Optional[str]
 
-  color: Optional[str] = None
-  fill_color: Optional[str] = None
-  stroke_color: Optional[str] = None
-  stroke_width: Optional[float] = None
+    color: Optional[str] = None
+    fill_color: Optional[str] = None
+    stroke_color: Optional[str] = None
+    stroke_width: Optional[float] = None
 
-  extras: Optional[Mapping[str, Any]] = None
+    extras: Optional[Mapping[str, Any]] = None
 
-  @property
-  def has_filled(self) -> bool:
-    return self.fill_color is not None
+    @property
+    def has_filled(self) -> bool:
+        return self.fill_color is not None
 
-  @property
-  def has_stroke(self) -> bool:
-    return self.stroke_color is not None and self.stroke_width != 0
+    @property
+    def has_stroke(self) -> bool:
+        return self.stroke_color is not None and self.stroke_width != 0
+
 
 @dataclass
 class SvgMetadata:
-  name: str
-  value: Any
-  default_value: Any
-  str_to_type: Callable
+    name: str
+    value: Any
+    default_value: Any
+    str_to_type: Callable

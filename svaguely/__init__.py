@@ -175,7 +175,7 @@ def convert_elements(
             element_id=element_id,
             element_name=element_name,
             geometry=shape_geometry,
-            element_type=str(element_type),
+            element_type=element_type,
             extras=extras,
             color=element_color,
             fill_color=element_fill_color,
