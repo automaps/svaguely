@@ -11,7 +11,7 @@ __author__ = "Christian Heider Lindbjerg <chen(at)mapspeople.com>"
 class SvgElement:
     element_id: str
 
-    element_type: str
+    element_type: type
 
     geometry: shapely.geometry.base.BaseGeometry
 
