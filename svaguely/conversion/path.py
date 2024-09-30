@@ -4,8 +4,12 @@ from typing import Optional, Sequence
 import numpy
 import shapely
 import svgelements
-from jord.shapely_utilities import closing, overlap_groups, split_enveloping_geometry
-from jord.shapely_utilities.base import clean_shape
+from jord.shapely_utilities import (
+    clean_shape,
+    overlap_groups,
+    closing,
+    split_enveloping_geometry,
+)
 from warg import Number
 
 __all__ = ["path_converter"]

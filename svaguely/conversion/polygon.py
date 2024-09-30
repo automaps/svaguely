@@ -1,7 +1,7 @@
 import numpy
 import shapely
 import svgelements
-from jord.shapely_utilities.base import clean_shape
+from jord.shapely_utilities import clean_shape
 from shapely import affinity
 from warg import Number
 
