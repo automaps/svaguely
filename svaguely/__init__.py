@@ -195,6 +195,7 @@ def parse_svg(
     Main function of converting. This reads the svg and parses it.
     Then converts the svgelements into classes with shapely geometries.
 
+    :param name_seperator: For nested group, what seperator should be used to denoted sub groups
     :param output_space:
     :param svg_filestream: Path to the svg
     :return: dataclass of svg elements and dataclass of metadata
@@ -225,6 +226,8 @@ def parse_svg(
         color="black",
         transform=None,
         context=None,
+        parse_display_none=False,
+        on_error="ignore",
     )
 
     metadata_dict = None

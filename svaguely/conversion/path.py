@@ -4,7 +4,7 @@ from typing import Optional, Sequence
 import numpy
 import shapely
 import svgelements
-from jord.shapely_utilities import overlap_groups, split_enveloping_geometry
+from jord.shapely_utilities import closing, overlap_groups, split_enveloping_geometry
 from jord.shapely_utilities.base import clean_shape
 from warg import Number
 
@@ -116,6 +116,7 @@ def path_converter(
                     else:
                         valid_geom_list.append(poly)
                 grouped = overlap_groups(valid_geom_list)
+
                 output_geoms = []
                 for group in grouped:
                     res = split_enveloping_geometry(group.values())
@@ -144,7 +145,11 @@ def path_converter(
                                     output_geoms.append(diff)
                             except Exception as e:
                                 logger.error("PATH ERROR:", e)
-                return shapely.unary_union(output_geoms)
+                    else:  # FALL BACK... TODO: FIGURE OUT A PROPER SOLUTION!, RIGHT NOW JUST ADD ALL GEOMS
+                        output_geoms.extend(group.values())
+                return closing(
+                    shapely.unary_union(output_geoms), distance=snap_distance
+                )
 
     if len(geoms) == 1:
         return geoms[0]
@@ -156,6 +161,7 @@ def path_converter(
 
     if gc.is_empty:
         logger.warning("PATH PARSING: Geometry collection was empty")
+
         return None
 
     return gc

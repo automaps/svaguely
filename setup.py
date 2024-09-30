@@ -47,7 +47,7 @@ def read_reqs(file: str, path: Path) -> List[str]:
     def unroll_nested_reqs(req_str: str, base_path: Path) -> Sequence:
         """description"""
         if req_str.startswith("-r"):
-            with open(base_path / req_str.strip("-r").strip()) as file_:
+            with open(base_path / req_str.replace("-r", "").strip()) as file_:
                 return [
                     unroll_nested_reqs(req.strip(), base_path)
                     for req in readlines_ignore_comments(file_)
@@ -174,7 +174,7 @@ class SvaguelyPackage:
 
         for file in path.iterdir():
             if file.name.startswith("requirements_"):
-                group_name_ = "_".join(file.name.strip(".txt").split("_")[1:])
+                group_name_ = "_".join(file.name.replace(".txt", "").split("_")[1:])
                 these_extras[group_name_] = read_reqs(file.name, path)
 
         all_dependencies = []
