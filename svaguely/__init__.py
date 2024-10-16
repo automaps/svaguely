@@ -37,6 +37,7 @@ def convert_elements(
     w: Optional[Number] = 1,
     h: Optional[Number] = 1,
     name_seperator: str = "|",
+    explicit_names: bool = False,
 ) -> Dict[str, SvgElement]:
     """
 
@@ -65,6 +66,11 @@ def convert_elements(
 
         element_id = element.id
 
+        if element_id is None:
+            element_id = next(name_counter)
+
+        element_id = str(element_id)
+
         if hasattr(element, "rx") or hasattr(element, "ry"):
             element = svgelements.Path(element)
             element = element.reify()
@@ -90,18 +96,31 @@ def convert_elements(
 
             extras.update(element.values)
 
-        element_unique_id = element_unique_id_base = (
-            f"{element_id}{name_seperator}{element_name}"
-        )
-        while element_unique_id in return_dict:
-            element_unique_id = (
-                f"{element_unique_id_base}{name_seperator}{next(name_counter)}"
-            )
+        element_unique_id = f"{element_id}"
+        if explicit_names:
+            element_unique_id = f"{element_unique_id}{name_seperator}{element_name}"
+
+            while element_unique_id in return_dict:
+                element_unique_id = (
+                    f"{element_unique_id}{name_seperator}{next(name_counter)}"
+                )
 
         if isinstance(element, svgelements.Group):
-            return_dict[element_unique_id] = convert_elements(
-                element, w=w, h=h, name_seperator=name_seperator
+            converted_elements = convert_elements(
+                element,
+                w=w,
+                h=h,
+                name_seperator=name_seperator,
+                explicit_names=explicit_names,
             )
+            if element_unique_id not in return_dict:
+                return_dict[element_unique_id] = converted_elements
+            else:
+                assert isinstance(return_dict[element_unique_id], Dict)
+                for k, v in converted_elements.items():
+                    assert k not in return_dict[element_unique_id]
+                    return_dict[element_unique_id][k] = v
+
             continue
 
         if isinstance(element, svgelements.Rect):
@@ -153,7 +172,9 @@ def convert_elements(
             extras["image"] = image_content
         elif isinstance(element, svgelements.Use):
             for ith, e in enumerate(element):
-                return_dict[f"{element_name}_{ith}"] = convert_elements(e, w=w, h=h)
+                return_dict[f"{element_unique_id}_{ith}"] = convert_elements(
+                    e, w=w, h=h
+                )
             continue
 
         elif isinstance(element, svgelements.Desc) and False:  # extract metadata
@@ -174,6 +195,8 @@ def convert_elements(
                 )
             continue
 
+        assert element_unique_id not in return_dict
+
         return_dict[element_unique_id] = SvgElement(
             element_id=element_id,
             element_name=element_name,
@@ -193,6 +216,7 @@ def parse_svg(
     svg_filestream: Union[Path, str, bytes],
     output_space: Optional[Union[Number, Tuple[Number, Number]]] = None,
     name_seperator: str = "|",
+    explicit_names: bool = False,
 ) -> Tuple[Dict[Any, Dict[str, SvgElement]], Optional[Any]]:
     """
     Main function of converting. This reads the svg and parses it.
@@ -209,6 +233,7 @@ def parse_svg(
             w = h = output_space
         else:
             w, h = output_space
+
     else:
         w = h = 1
 
@@ -249,12 +274,32 @@ def parse_svg(
 
         else:
             element_id = element.id
-            element_unique_id = str(element_id)
-            while element_unique_id in shape_elements:
-                element_unique_id = f"{element_id}{name_seperator}{next(name_counter)}"
+            if element_id:
+                element_unique_id = str(element_id)
 
-            shape_elements[element_unique_id] = convert_elements(
-                element, w=w, h=h, name_seperator=name_seperator
+                if explicit_names:
+                    while element_unique_id in shape_elements:
+                        element_unique_id = (
+                            f"{element_id}{name_seperator}{next(name_counter)}"
+                        )
+
+            else:
+                element_unique_id = next(name_counter)
+
+            converted_elements = convert_elements(
+                element,
+                w=w,
+                h=h,
+                name_seperator=name_seperator,
+                explicit_names=explicit_names,
             )
+
+            if element_unique_id not in shape_elements:
+                shape_elements[element_unique_id] = converted_elements
+            else:
+                assert isinstance(shape_elements[element_unique_id], Dict)
+                for k, v in converted_elements.items():
+                    assert k not in shape_elements[element_unique_id]
+                    shape_elements[element_unique_id][k] = v
 
     return shape_elements, metadata_dict
