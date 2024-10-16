@@ -1,14 +1,5 @@
 fail_fast: true
 repos:
-  - repo: local
-    hooks:
-      - id: no_implicit_optional
-        name: no_implicit_optional
-        entry: pipx run no_implicit_optional
-        language: system
-        pass_filenames: true
-        types: [ file, python ]
-        files: \.(py.j2|py)$
 
   - repo: https://github.com/asottile/pyupgrade
     rev: v3.17.0
@@ -130,7 +121,7 @@ repos:
         entry: check-executables-have-shebangs
         language: python
         types: [ text, executable ]
-        stages: [ commit, push, manual ]
+        stages: [ pre-commit, pre-push, manual ]
       - id: check-json
         name: check json
         description: checks json files for parseable syntax.
@@ -143,7 +134,7 @@ repos:
         entry: check-shebang-scripts-are-executable
         language: python
         types: [ text ]
-        stages: [ commit, push, manual ]
+        stages: [ pre-commit, pre-push, manual ]
       - id: check-merge-conflict
         name: check for merge conflicts
         description: checks for files that contain merge conflict strings.
@@ -204,7 +195,7 @@ repos:
         entry: end-of-file-fixer
         language: python
         types: [ text ]
-        stages: [ commit, push, manual ]
+        stages: [ pre-commit, pre-push, manual ]
       - id: file-contents-sorter
         name: file contents sorter
         description: sorts the lines in specified files (defaults to alphabetical). you must provide list of target files as input in your .pre-commit-config.yaml file.
@@ -247,4 +238,4 @@ repos:
         entry: trailing-whitespace-fixer
         language: python
         types: [ text ]
-        stages: [ commit, push, manual ]
+        stages: [ pre-commit, pre-push, manual ]

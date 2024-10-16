@@ -1,9 +1,7 @@
 import io
 import json
-import logging
 import os
 from itertools import count
-from pathlib import Path
 from typing import Any, Dict, Optional, Tuple, Union
 
 import svgelements
@@ -12,6 +10,7 @@ from warg import Number
 from .conversion import *
 from .data_models import *
 from .metadata import *
+from .rendering import *
 
 __project__ = "Svaguely"
 __doc__ = """\
@@ -65,6 +64,10 @@ def convert_elements(
         extras = {}
 
         element_id = element.id
+
+        if hasattr(element, "rx") or hasattr(element, "ry"):
+            element = svgelements.Path(element)
+            element = element.reify()
 
         if hasattr(element, "color") and element.color:
             element_color = element.color

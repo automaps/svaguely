@@ -5,9 +5,6 @@ from typing import Mapping
 import numpy
 import shapely
 
-from .recognition import run_ocr_no_cluster
-from ..svaguely.rendering import render_svg
-
 detection = namedtuple("detection", ("text", "left", "bottom", "right", "top", "page"))
 detection_shapely = namedtuple("detection_shapely", ("text", "polygon"))
 
@@ -46,6 +43,9 @@ def horizontal_cluster(rendered_image_path: Path, detections: Mapping) -> None:
 # b = polygon_geom.bounds
 # Find the NW corner of bounds (minx, maxy)
 # nw_corner = (b[0], b[3])
+
+from .recognition import run_ocr_no_cluster
+from ..svaguely import render_svg
 
 rendered_img_path = render_svg(
     Path.home() / "Downloads" / "Cross_Creek_Siteplan_TOURGUIDE_230421.svg"
