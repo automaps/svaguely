@@ -28,7 +28,9 @@ PROJECT_VERSION = __version__
 
 logger = logging.getLogger(__name__)
 
-__all__ = ["convert_elements", "parse_svg"]
+__all__ = ["convert_elements", "parse_svg", "COUNTER_ELEMENT_ID_NAME"]
+
+COUNTER_ELEMENT_ID_NAME = "ELEMENT_COUNTER_"
 
 
 def convert_elements(
@@ -41,6 +43,7 @@ def convert_elements(
 ) -> Dict[str, SvgElement]:
     """
 
+    :param explicit_names:
     :param elements:
     :param w:
     :param h:
@@ -67,7 +70,7 @@ def convert_elements(
         element_id = element.id
 
         if element_id is None:
-            element_id = next(name_counter)
+            element_id = f"{COUNTER_ELEMENT_ID_NAME}{next(name_counter)}"
 
         element_id = str(element_id)
 
@@ -222,6 +225,7 @@ def parse_svg(
     Main function of converting. This reads the svg and parses it.
     Then converts the svgelements into classes with shapely geometries.
 
+    :param explicit_names:
     :param name_seperator: For nested group, what seperator should be used to denoted sub groups
     :param output_space:
     :param svg_filestream: Path to the svg
@@ -284,7 +288,7 @@ def parse_svg(
                         )
 
             else:
-                element_unique_id = next(name_counter)
+                element_unique_id = f"{COUNTER_ELEMENT_ID_NAME}{next(name_counter)}"
 
             converted_elements = convert_elements(
                 element,
