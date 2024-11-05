@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, Callable, Mapping, Optional
+from typing import Any, Mapping, Optional
 
 import shapely
 
@@ -38,4 +38,4 @@ class SvgMetadata:
     name: str
     value: Any
     default_value: Any
-    str_to_type: Callable
+    str_to_type: callable

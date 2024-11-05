@@ -1,7 +1,5 @@
 from pathlib import Path
 
-from bs4 import BeautifulSoup
-
 try:
     import Image
 except ImportError:
@@ -14,6 +12,7 @@ logger = logging.getLogger(__name__)
 
 def render_svg(svg_path: Path, inclusion_filter=("label", "number", "text")):
     import cairosvg
+    from bs4 import BeautifulSoup
 
     filtered_path = svg_path.parent / f"{'_'.join(inclusion_filter)}.svg"
 

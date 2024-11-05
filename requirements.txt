@@ -1,4 +1,5 @@
 apppath
+beautifulsoup4
 cairosvg
 crc32c
 jord[shapely]
