@@ -6,8 +6,8 @@ import shapely
 import svgelements
 from jord.shapely_utilities import (
     clean_shape,
-    overlap_groups,
     closing,
+    overlap_groups,
     split_enveloping_geometry,
 )
 from warg import Number
