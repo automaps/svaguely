@@ -68,8 +68,9 @@ def path_converter(
             else:
                 raise NotImplementedError(f"{segment=}")
 
-        if len(sub_paths) == 0:
+        if len(points_along_path) > 0 or len(sub_paths) == 0:
             sub_paths.append(points_along_path.copy())
+            points_along_path.clear()
 
     except Exception as p:
         logger.error(p)
@@ -117,8 +118,10 @@ def path_converter(
                             snap_distance, cap_style=3, join_style=2, mitre_limit=2
                         )
                         valid_geom_list.append(buffer_out)
+
                     else:
                         valid_geom_list.append(poly)
+
                 grouped = overlap_groups(valid_geom_list)
 
                 output_geoms = []
@@ -134,6 +137,9 @@ def path_converter(
                             diff = clean_shape(
                                 shapely.difference(envelop, stamped_geometries)
                             )
+
+                        elif len(rest) == 0:
+                            diff = envelop
                         else:
                             try:
                                 rest_union = clean_shape(shapely.unary_union(rest))
@@ -149,8 +155,12 @@ def path_converter(
                                     output_geoms.append(diff)
                             except Exception as e:
                                 logger.error("PATH ERROR:", e)
+                        else:
+                            logger.warning("PATH PARSING: Envelope was not valid")
+
                     else:  # FALL BACK... TODO: FIGURE OUT A PROPER SOLUTION!, RIGHT NOW JUST ADD ALL GEOMS
                         output_geoms.extend(group.values())
+
                 return closing(
                     shapely.unary_union(output_geoms), distance=snap_distance
                 )

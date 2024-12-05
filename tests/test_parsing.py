@@ -19,3 +19,7 @@ def test_file_parse_use():
 
 def test_file_parse_use_2():
     print(parse_svg(Path(__file__).parent / "fixtures" / "test_chair.svg"))
+
+
+def test_file_parse_single_path():
+    print(parse_svg(Path.home() / "Downloads" / "ricoh-logo-2005-neu.svg"))
