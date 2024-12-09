@@ -1,25 +1,41 @@
-# -*- coding: utf-8 -*-
 from dataclasses import dataclass
-from typing import Callable, Any
+from typing import Any, Mapping, Optional
 
-from shapely.geometry.base import BaseGeometry
+import shapely
 
-__all__ = ["SvgShapelyGeometry", "SvgMetadata"]
+__all__ = ["SvgElement", "SvgMetadata"]
+__author__ = "Christian Heider Lindbjerg <chen(at)mapspeople.com>"
 
 
 @dataclass
-class SvgShapelyGeometry:
-  name: str
-  geometry: BaseGeometry
-  item_value_class: str
-  item_type: str
-  item_filled: bool
-  item_colour: str = None
+class SvgElement:
+    element_id: str
+
+    element_type: type
+
+    geometry: shapely.geometry.base.BaseGeometry
+
+    element_name: Optional[str]
+
+    color: Optional[str] = None
+    fill_color: Optional[str] = None
+    stroke_color: Optional[str] = None
+    stroke_width: Optional[float] = None
+
+    extras: Optional[Mapping[str, Any]] = None
+
+    @property
+    def has_filled(self) -> bool:
+        return self.fill_color is not None
+
+    @property
+    def has_stroke(self) -> bool:
+        return self.stroke_color is not None and self.stroke_width != 0
 
 
 @dataclass
 class SvgMetadata:
-  name: str
-  value: Any
-  default_value: Any
-  str_to_type: Callable
+    name: str
+    value: Any
+    default_value: Any
+    str_to_type: callable

@@ -1,11 +1,11 @@
-# -*- coding: utf-8 -*-
-from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable, Any, Mapping
+from typing import Mapping
+
+__all__ = ["add_metadata_desc_tag", "METADATA_KEY"]
+
+__author__ = "Christian Heider Lindbjerg <chen(at)mapspeople.com>"
 
 METADATA_KEY = "SVG_METADATA"
-
-__all__ = ["add_metadata_desc_tag"]
 
 
 def add_metadata_desc_tag(metadata_dict: Mapping, path_to_svg: Path) -> str:
