@@ -249,6 +249,15 @@ def parse_svg(
     elif not os.path.isfile(svg_filestream):
         svg_filestream = io.StringIO(str(svg_filestream))
 
+    elif isinstance(svg_filestream, (str, Path)):
+        if os.path.getsize(svg_filestream) == 0:
+            return {}, None
+            # raise ValueError(f"Empty file: {svg_filestream}")
+
+        # svg_filestream = open(svg_filestream, "r")
+    else:
+        raise ValueError(f"Unknown type: {type(svg_filestream)}")
+
     svg = svgelements.SVG.parse(
         svg_filestream,
         reify=True,
