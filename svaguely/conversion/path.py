@@ -4,13 +4,14 @@ from typing import Optional, Sequence
 import numpy
 import shapely
 import svgelements
+from warg import Number
+
 from jord.shapely_utilities import (
     clean_shape,
     closing,
     overlap_groups,
     split_enveloping_geometry,
 )
-from warg import Number
 
 __all__ = ["path_converter"]
 __author__ = "Christian Heider Lindbjerg <chen(at)mapspeople.com>"
