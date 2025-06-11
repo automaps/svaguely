@@ -2,9 +2,9 @@ import numpy
 import shapely
 import svgelements
 from shapely import affinity
-from warg import Number
 
 from jord.shapely_utilities import clean_shape
+from warg import Number
 
 __all__ = ["polygon_converter"]
 

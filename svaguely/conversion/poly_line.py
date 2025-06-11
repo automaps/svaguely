@@ -4,6 +4,7 @@ import numpy
 import shapely
 import svgelements
 from shapely import affinity
+
 from warg import Number
 
 __all__ = ["polyline_converter"]

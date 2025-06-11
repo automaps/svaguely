@@ -2,6 +2,7 @@ from typing import Any, Dict, Tuple
 
 import shapely
 import svgelements
+
 from warg import Number
 
 __all__ = ["text_converter"]

@@ -2,6 +2,7 @@ from typing import Tuple
 
 import shapely
 import svgelements
+
 from warg import Number
 
 __all__ = ["image_converter"]

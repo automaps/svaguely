@@ -5,8 +5,8 @@ from itertools import count
 from typing import Any, Dict, Optional, Tuple, Union
 
 import svgelements
-from warg import Number
 
+from warg import Number
 from .conversion import *
 from .data_models import *
 from .metadata import *

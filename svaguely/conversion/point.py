@@ -1,5 +1,6 @@
 import shapely
 import svgelements
+
 from warg import Number
 
 __all__ = ["point_converter"]
