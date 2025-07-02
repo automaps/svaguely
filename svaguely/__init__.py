@@ -28,7 +28,17 @@ PROJECT_VERSION = __version__
 
 logger = logging.getLogger(__name__)
 
-__all__ = ["convert_elements", "parse_svg", "COUNTER_ELEMENT_ID_NAME"]
+__all__ = [
+    "convert_elements",
+    "parse_svg",
+    "COUNTER_ELEMENT_ID_NAME",
+    "render_svg",
+    "PROJECT_AUTHOR",
+    "PROJECT_NAME",
+    "PROJECT_ORGANISATION",
+    "PROJECT_VERSION",
+    "PROJECT_YEAR",
+]
 
 COUNTER_ELEMENT_ID_NAME = "ELEMENT_COUNTER_"
 
