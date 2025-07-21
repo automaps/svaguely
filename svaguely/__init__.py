@@ -1,10 +1,9 @@
 import io
 import json
 import os
+import svgelements
 from itertools import count
 from typing import Any, Dict, Optional, Tuple, Union
-
-import svgelements
 
 from warg import Number
 from .conversion import *

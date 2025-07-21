@@ -1,9 +1,8 @@
 import logging
-from typing import Optional, Sequence
-
 import numpy
 import shapely
 import svgelements
+from typing import Optional, Sequence
 
 from jord.shapely_utilities import (
     clean_shape,

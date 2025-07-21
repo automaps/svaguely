@@ -1,7 +1,6 @@
-from pathlib import Path
-
 import geopandas
 from matplotlib import pyplot
+from pathlib import Path
 
 from svaguely import parse_svg
 from warg import flatten_mapping

@@ -1,7 +1,6 @@
-from typing import Any, Dict, Tuple
-
 import shapely
 import svgelements
+from typing import Any, Dict, Tuple
 
 from warg import Number
 

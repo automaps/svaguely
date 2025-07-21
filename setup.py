@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 import re
 from pathlib import Path
-from typing import List, Sequence, TextIO, Union
-
 from setuptools import find_packages, setup
+from typing import List, Sequence, TextIO, Union
 
 MIN_PYTHON_MAJOR = 3
 MIN_PYTHON_MINOR = 8

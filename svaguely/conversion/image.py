@@ -1,7 +1,6 @@
-from typing import Tuple
-
 import shapely
 import svgelements
+from typing import Tuple
 
 from warg import Number
 
