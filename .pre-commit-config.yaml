@@ -9,7 +9,7 @@ repos:
           - --py38-plus
           - --keep-runtime-typing
 
-  - repo: https://github.com/ambv/black
+  - repo: https://github.com/psf/black
     rev: 25.1.0
     hooks:
       - id: black
