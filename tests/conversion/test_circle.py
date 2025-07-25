@@ -1,4 +1,5 @@
 import math
+
 import svgelements
 
 from svaguely.conversion import circle_converter

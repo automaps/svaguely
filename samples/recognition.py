@@ -1,5 +1,6 @@
-from PIL import Image
 from pathlib import Path
+
+from PIL import Image
 
 
 def run_ocr_no_cluster(img_path: Path):
