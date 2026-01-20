@@ -1,4 +1,5 @@
 from pathlib import Path
+
 from typing import Mapping
 
 __all__ = ["add_metadata_desc_tag", "METADATA_KEY"]

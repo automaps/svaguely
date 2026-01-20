@@ -1,9 +1,9 @@
 from collections import namedtuple
 from pathlib import Path
-from typing import Mapping
 
 import numpy
 import shapely
+from typing import Mapping
 
 detection = namedtuple("detection", ("text", "left", "bottom", "right", "top", "page"))
 detection_shapely = namedtuple("detection_shapely", ("text", "polygon"))

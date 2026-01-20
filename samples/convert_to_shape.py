@@ -1,5 +1,6 @@
-import logging
 from pathlib import Path
+
+import logging
 
 from svaguely import parse_svg
 from warg import flatten_mapping

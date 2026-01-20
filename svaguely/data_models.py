@@ -1,7 +1,6 @@
+import shapely
 from dataclasses import dataclass
 from typing import Any, Callable, Mapping, Optional
-
-import shapely
 
 __all__ = ["SvgElement", "SvgMetadata"]
 __author__ = "Christian Heider Lindbjerg <chen(at)mapspeople.com>"
