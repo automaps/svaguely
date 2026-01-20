@@ -26,7 +26,7 @@ PROJECT_YEAR = 2023
 PROJECT_ORGANISATION = "MapsPeople"
 PROJECT_VERSION = __version__
 
-logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
 
 __all__ = [
     "convert_elements",
@@ -203,7 +203,7 @@ def convert_elements(
             """Nested SVG objects. (Caveats see Non-Supported)."""
 
             if True:
-                logger.warning(
+                _logger.warning(
                     f"Not supported class: {f'{element.string_xml()} {type(element)}'}"
                 )
             continue

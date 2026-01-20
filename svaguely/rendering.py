@@ -7,7 +7,7 @@ except ImportError:
 
 import logging
 
-logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
 
 
 def render_svg(svg_path: Path, inclusion_filter=("label", "number", "text")):
@@ -34,7 +34,7 @@ def render_svg(svg_path: Path, inclusion_filter=("label", "number", "text")):
                         keep = True
 
                 if not keep:
-                    logger.info(f"Decomposing {item_id}")
+                    _logger.info(f"Decomposing {item_id}")
                     item.decompose()
 
     with open(filtered_path, "w") as o:
@@ -50,7 +50,7 @@ def render_svg(svg_path: Path, inclusion_filter=("label", "number", "text")):
                 # dpi=1
             )
 
-    logger.info(f"Wrote filtered PNG to {target_png}")
+    _logger.info(f"Wrote filtered PNG to {target_png}")
 
     return target_png
 

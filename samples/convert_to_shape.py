@@ -12,8 +12,8 @@ svg_elements, _ = parse_svg(svg_file_name, output_space=1)
 
 svg_elements = flatten_mapping(svg_elements)
 
-logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
 
 for ith, (element_unique_id, element) in enumerate(svg_elements.items()):
-    logger.warning(element_unique_id)
+    _logger.warning(element_unique_id)
     # logger.warning(element)

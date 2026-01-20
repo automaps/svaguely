@@ -18,7 +18,7 @@ __author__ = "Christian Heider Lindbjerg <chen(at)mapspeople.com>"
 
 ASSUME_SUB_PATHS_ARE_HOLES = True
 
-logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
 
 
 def path_converter(
@@ -74,7 +74,7 @@ def path_converter(
             points_along_path.clear()
 
     except Exception as p:
-        logger.error(p)
+        _logger.error(p)
 
     was_polygon = []
     geoms = []
@@ -102,7 +102,7 @@ def path_converter(
             geoms.append(shapely.geometry.LineString(path_points))
             was_polygon.append(False)
         else:
-            logger.warning(f"empty path {path_points=}")
+            _logger.warning(f"empty path {path_points=}")
 
     if ASSUME_SUB_PATHS_ARE_HOLES:
         if len(geoms) > 1:
@@ -148,16 +148,16 @@ def path_converter(
                                     shapely.difference(envelop, rest_union)
                                 )
                             except Exception as ex:
-                                logger.error("UNION ERROR:", ex)
+                                _logger.error("UNION ERROR:", ex)
 
                         if envelop.is_valid:
                             try:
                                 if diff.is_valid:
                                     output_geoms.append(diff)
                             except Exception as e:
-                                logger.error("PATH ERROR:", e)
+                                _logger.error("PATH ERROR:", e)
                         else:
-                            logger.warning("PATH PARSING: Envelope was not valid")
+                            _logger.warning("PATH PARSING: Envelope was not valid")
 
                     else:  # FALL BACK... TODO: FIGURE OUT A PROPER SOLUTION!, RIGHT NOW JUST ADD ALL GEOMS
                         output_geoms.extend(group.values())
@@ -175,7 +175,7 @@ def path_converter(
     # it returns a geometrycollection
 
     if gc.is_empty:
-        logger.warning("PATH PARSING: Geometry collection was empty")
+        _logger.warning("PATH PARSING: Geometry collection was empty")
 
         return None
 
