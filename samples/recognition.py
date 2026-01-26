@@ -71,7 +71,7 @@ def run_ocr_confidence(img_path):
         if detection["conf"][i] < confidence:
             continue
 
-        (x, y, w, h) = (
+        x, y, w, h = (
             detection["left"][i],
             detection["top"][i],
             detection["width"][i],

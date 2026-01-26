@@ -2,7 +2,7 @@ fail_fast: true
 repos:
 
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.20.0
+    rev: v3.21.2
     hooks:
       - id: pyupgrade
         args:
@@ -10,7 +10,7 @@ repos:
           - --keep-runtime-typing
 
   - repo: https://github.com/psf/black
-    rev: 25.1.0
+    rev: 26.1.0
     hooks:
       - id: black
         language_version: python3.10
@@ -27,7 +27,7 @@ repos:
   #      - id: validate-pyproject
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.17.1
+    rev: v1.19.1
     hooks:
       - id: mypy
         verbose: true
@@ -84,7 +84,7 @@ repos:
   #          ]
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0 # Use the ref you want to point at
+    rev: v6.0.0 # Use the ref you want to point at
     hooks:
       - id: check-ast
         name: check python ast
@@ -92,10 +92,10 @@ repos:
         entry: check-ast
         language: python
         types: [ python ]
-      - id: check-byte-order-marker
-        name: "check BOM - deprecated: use fix-byte-order-marker"
+      - id: fix-byte-order-marker
+        name: "use fix-byte-order-marker"
         description: forbids files which have a utf-8 byte-order marker.
-        entry: check-byte-order-marker
+        entry: fix-byte-order-marker
         language: python
         types: [ text ]
       - id: check-builtin-literals
