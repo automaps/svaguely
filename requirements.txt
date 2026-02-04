@@ -2,7 +2,7 @@ apppath
 beautifulsoup4
 cairosvg
 crc32c
-jord[shapely]
+jord[shapely]>=0.10.3
 momepy
 numpy~=1.24.0
 pytesseract
@@ -10,4 +10,4 @@ pytest
 pytz
 shapely
 svgelements
-warg
+warg>=1.5.0
