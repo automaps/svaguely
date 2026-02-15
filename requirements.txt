@@ -2,9 +2,9 @@ apppath
 beautifulsoup4
 cairosvg
 crc32c
-jord[shapely]>=0.10.3
+jord[shapely]>=0.10.5
 momepy
-numpy~=1.24.0
+numpy>=1.24.0
 pytesseract
 pytest
 pytz

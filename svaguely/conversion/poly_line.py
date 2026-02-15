@@ -1,8 +1,9 @@
+from typing import Union
+
 import numpy
 import shapely
 import svgelements
 from shapely import affinity
-from typing import Union
 
 from warg import Number
 
